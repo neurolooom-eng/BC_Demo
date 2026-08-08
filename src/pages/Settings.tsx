@@ -23,7 +23,7 @@ export function Settings() {
 
       <Card className="p-4">
         <div className="mb-4 flex items-center gap-4">
-          <img src={assetUrl('/logo.png')} alt={COMPANY.brandName} className="h-10 w-auto" />
+          <img src={assetUrl('/logo.svg')} alt={COMPANY.brandName} className="h-10 w-auto" />
           <div>
             <p className="text-sm font-semibold text-text">{COMPANY.legalName}</p>
             <p className="text-xs text-muted">{COMPANY.domain}</p>
