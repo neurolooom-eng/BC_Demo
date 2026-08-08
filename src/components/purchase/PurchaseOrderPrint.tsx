@@ -15,7 +15,7 @@ export function PurchaseOrderPrint({ po }: { po: PurchaseOrderDoc }) {
     <div id="print-area" className="mx-auto max-w-3xl bg-white p-8 text-black">
       <div className="mb-6 flex items-center justify-between border-b border-black/20 pb-4">
         <div className="flex items-center gap-3">
-          <img src={assetUrl('/logo-mark.png')} alt="Best Cast" className="h-10 w-auto" />
+          <img src={assetUrl('/logo-mark.svg')} alt="Best Cast" className="h-10 w-auto" />
           <div>
             <p className="text-lg font-bold">{COMPANY.legalName}</p>
             <p className="text-xs text-black/70">{COMPANY.headquarters}</p>
