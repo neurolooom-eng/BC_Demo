@@ -3,6 +3,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom'
 import { AppLayout } from './components/layout/AppLayout'
 import { RequirePermission } from './components/RequirePermission'
 import { AccessProvider, useAccess } from './context/AccessContext'
+import { NavPrefsProvider } from './context/NavPrefsContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { ensureSeeded } from './data/credentials'
 import { Accounts } from './pages/Accounts'
@@ -118,7 +119,9 @@ function App() {
   return (
     <AccessProvider>
       <ThemeProvider>
-        <AuthGate />
+        <NavPrefsProvider>
+          <AuthGate />
+        </NavPrefsProvider>
       </ThemeProvider>
     </AccessProvider>
   )

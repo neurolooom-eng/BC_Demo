@@ -7,8 +7,12 @@ import type { Group, Permission, User } from '../types/access'
 
 /** Internal id of the signed-in user; survives reloads so sessions persist. */
 const SESSION_KEY = 'bestcast.session'
-/** Demo-mode persistence of the user list (admin edits survive reloads). */
-const USERS_KEY = 'bestcast.users'
+/**
+ * Demo-mode persistence of the user list (admin edits survive reloads).
+ * Versioned: bump when the seeded user list changes so existing browsers
+ * adopt the new seed instead of a stale persisted copy.
+ */
+const USERS_KEY = 'bestcast.users.v2'
 
 interface AccessContextValue {
   users: User[]

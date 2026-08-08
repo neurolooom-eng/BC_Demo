@@ -148,6 +148,36 @@ export const UAT_SUITES: UatFeature[] = [
     ],
   },
   {
+    id: 'navigation',
+    feature: 'Configurable Navigation',
+    cases: [
+      {
+        id: 'UAT-NAV-01',
+        requirement: 'REQ-NAV-01',
+        title: 'Supply Chain and Finance hidden by default',
+        preconditions: 'A browser with no saved navigation preference; signed in.',
+        steps: ['Inspect the sidebar sections.'],
+        expected: 'Neither Supply Chain nor Finance appears in the sidebar.',
+      },
+      {
+        id: 'UAT-NAV-02',
+        requirement: 'REQ-NAV-02',
+        title: 'Developer toggles a section on',
+        preconditions: 'Signed in as a developer/administrator.',
+        steps: ['Open Developer Config.', 'In "Navigation & Modules", set Supply Chain to Visible.', 'Observe the sidebar, then reload the page.'],
+        expected: 'Supply Chain appears in the sidebar immediately and remains visible after reload.',
+      },
+      {
+        id: 'UAT-NAV-03',
+        requirement: 'REQ-NAV-01',
+        title: 'Hidden module still reachable by URL',
+        preconditions: 'Finance hidden; signed in with Accounts access.',
+        steps: ['Navigate directly to #/accounts.'],
+        expected: 'The Accounts page loads; hiding only affects the sidebar, not the routes.',
+      },
+    ],
+  },
+  {
     id: 'docs',
     feature: 'Documentation',
     cases: [

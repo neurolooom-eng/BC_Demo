@@ -25,7 +25,7 @@ export const USERS: User[] = [
   { id: 'user-auditor', userId: 'auditor', name: 'External Auditor', email: 'auditor@bestcastgroup.com', groupId: 'group-viewer', status: 'invited' },
   // Developers are Administrators by default (full access, incl. Requirements & UAT).
   // These accounts set their own password from the Login page (verified by email).
-  { id: 'user-neuroloom', userId: 'neurolooom', name: 'NeuroLooom (Developer)', email: 'neurolooom@gmail.com', groupId: 'group-admin', status: 'invited' },
+  { id: 'user-neuroloom', userId: 'neurolooom@gmail.com', name: 'NeuroLooom (Developer)', email: 'neurolooom@gmail.com', groupId: 'group-admin', status: 'active' },
   // NOTE: dev@bcit.com is a temporary developer address and is expected to
   // change - update the email/User ID here or via Admin > Users when it does.
   { id: 'user-bcit-dev', userId: 'dev', name: 'BCIT Developer', email: 'dev@bcit.com', groupId: 'group-admin', status: 'invited' },
@@ -35,3 +35,15 @@ export const USERS: User[] = [
 export const DEMO_ADMIN_USER_ID = 'vikensh'
 /** The pre-seeded password for DEMO_ADMIN_USER_ID in standalone demo mode. */
 export const DEMO_ADMIN_PASSWORD = 'BestCast@123'
+
+/**
+ * Accounts that ship with a pre-set password so they can sign in immediately
+ * in standalone demo mode. Passwords are salted-hashed at seed time (see
+ * src/data/credentials.ts) - they are not stored anywhere as plain text at
+ * runtime. When the Google Sheets backend is connected these are ignored;
+ * set the password there via the Login page instead.
+ */
+export const DEMO_CREDENTIALS: { userId: string; password: string }[] = [
+  { userId: DEMO_ADMIN_USER_ID, password: DEMO_ADMIN_PASSWORD },
+  { userId: 'neurolooom@gmail.com', password: 'Coxpass100!' },
+]

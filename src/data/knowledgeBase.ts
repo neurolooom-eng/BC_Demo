@@ -199,6 +199,46 @@ export const KB_ARTICLES: KbArticle[] = [
       },
     ],
   },
+  {
+    id: 'configurable-navigation',
+    title: 'Showing & Hiding Modules',
+    category: 'Administration',
+    audience: 'Developers',
+    summary: 'Which sidebar sections (modules) appear, and how a developer turns them on or off.',
+    updated: '2026-08-08',
+    sections: [
+      {
+        heading: 'Overview',
+        body: [
+          'The sidebar is organised into sections such as Quality Management, Production, Supply Chain and Finance. Sections can be shown or hidden so people only see the modules that are in use.',
+          'Out of the box, Supply Chain and Finance are hidden. Hiding a section only removes it from the sidebar - the pages and their data are untouched and can still be reached by their direct link.',
+        ],
+      },
+      {
+        heading: 'Turning a section on or off (developers)',
+        steps: [
+          'Open Developer Config from the sidebar (available to developers).',
+          'Find the "Navigation & Modules" card.',
+          'Select a section to switch it between Visible and Hidden.',
+        ],
+        body: ['The sidebar updates immediately and your choice is remembered on this device.'],
+      },
+    ],
+    faqs: [
+      {
+        q: 'Why don’t I see Supply Chain or Finance in the menu?',
+        a: 'They are hidden by default. A developer can switch them back on from Developer Config → Navigation & Modules.',
+      },
+      {
+        q: 'Does hiding a section delete anything?',
+        a: 'No. Hiding only removes the section from the sidebar. The pages and data remain, and the section can be shown again at any time.',
+      },
+      {
+        q: 'Is the show/hide choice shared with everyone?',
+        a: 'The toggle is saved in the current browser. The shipped defaults (Supply Chain and Finance hidden) apply everywhere until a developer changes them.',
+      },
+    ],
+  },
 ]
 
 export const KB_CATEGORIES = Array.from(new Set(KB_ARTICLES.map((a) => a.category)))
