@@ -1,0 +1,115 @@
+/*
+ * Best Cast e-QMS theme tokens.
+ * Each palette defines the same variable set as R G B channels so Tailwind's
+ * rgb(var(--x) / <alpha>) opacity utilities work. Switch by setting
+ * <html data-theme="...">.
+ *
+ * "bestcast-light" / "bestcast-dark" are extracted from the real Best Cast
+ * Group logo: navy #09025E, teal #177562, orange #E68440. Primary/accent
+ * carry the brand; success/warning/danger/info stay semantic (universal
+ * meaning) rather than brand-tied. The remaining palettes (ocean, midnight,
+ * emerald, contrast) are supplementary options in the theme picker.
+ */
+
+:root,
+[data-theme='bestcast-light'] {
+  --c-bg: 244 246 250;
+  --c-surface: 255 255 255;
+  --c-surface-2: 236 239 246;
+  --c-border: 222 226 238;
+  --c-text: 9 2 94;
+  --c-muted: 95 92 140;
+  --c-primary: 23 117 98;
+  --c-primary-fg: 255 255 255;
+  --c-accent: 230 132 64;
+  --c-success: 22 163 74;
+  --c-warning: 217 119 6;
+  --c-danger: 220 38 38;
+  --c-info: 2 132 199;
+  color-scheme: light;
+}
+
+[data-theme='bestcast-dark'] {
+  --c-bg: 6 5 26;
+  --c-surface: 14 12 42;
+  --c-surface-2: 23 20 62;
+  --c-border: 45 41 92;
+  --c-text: 228 227 245;
+  --c-muted: 156 153 196;
+  --c-primary: 45 189 158;
+  --c-primary-fg: 5 32 27;
+  --c-accent: 240 155 90;
+  --c-success: 74 222 128;
+  --c-warning: 251 191 36;
+  --c-danger: 248 113 113;
+  --c-info: 96 179 250;
+  color-scheme: dark;
+}
+
+[data-theme='ocean'] {
+  --c-bg: 240 249 255;
+  --c-surface: 255 255 255;
+  --c-surface-2: 224 242 254;
+  --c-border: 186 230 253;
+  --c-text: 12 42 62;
+  --c-muted: 71 105 130;
+  --c-primary: 2 132 199;
+  --c-primary-fg: 255 255 255;
+  --c-accent: 8 145 178;
+  --c-success: 22 163 74;
+  --c-warning: 217 119 6;
+  --c-danger: 220 38 38;
+  --c-info: 3 105 161;
+  color-scheme: light;
+}
+
+[data-theme='midnight'] {
+  --c-bg: 8 8 24;
+  --c-surface: 17 17 39;
+  --c-surface-2: 30 30 58;
+  --c-border: 51 51 84;
+  --c-text: 224 224 245;
+  --c-muted: 148 148 184;
+  --c-primary: 129 140 248;
+  --c-primary-fg: 15 15 35;
+  --c-accent: 168 130 238;
+  --c-success: 74 222 128;
+  --c-warning: 251 191 36;
+  --c-danger: 248 113 113;
+  --c-info: 96 165 250;
+  color-scheme: dark;
+}
+
+[data-theme='emerald'] {
+  --c-bg: 240 253 244;
+  --c-surface: 255 255 255;
+  --c-surface-2: 220 252 231;
+  --c-border: 187 247 208;
+  --c-text: 6 46 30;
+  --c-muted: 71 112 88;
+  --c-primary: 5 150 105;
+  --c-primary-fg: 255 255 255;
+  --c-accent: 13 148 82;
+  --c-success: 22 163 74;
+  --c-warning: 217 119 6;
+  --c-danger: 220 38 38;
+  --c-info: 2 132 199;
+  color-scheme: light;
+}
+
+[data-theme='contrast'] {
+  --c-bg: 0 0 0;
+  --c-surface: 20 20 20;
+  --c-surface-2: 38 38 38;
+  --c-border: 82 82 82;
+  --c-text: 255 255 255;
+  --c-muted: 212 212 212;
+  --c-primary: 250 204 21;
+  --c-primary-fg: 0 0 0;
+  --c-accent: 250 204 21;
+  --c-success: 74 222 128;
+  --c-warning: 250 204 21;
+  --c-danger: 248 113 113;
+  --c-info: 125 211 252;
+  color-scheme: dark;
+}
