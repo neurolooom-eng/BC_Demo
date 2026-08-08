@@ -23,12 +23,13 @@ export const USERS: User[] = [
   { id: 'user-ganesh', userId: 'ganesh', name: 'Ganesh', email: 'ganesh@bestcastgroup.com', groupId: 'group-store-keeper', status: 'invited' },
   { id: 'user-lakshmi', userId: 'lakshmi', name: 'Lakshmi', email: 'lakshmi@bestcastgroup.com', groupId: 'group-accountant', status: 'invited' },
   { id: 'user-auditor', userId: 'auditor', name: 'External Auditor', email: 'auditor@bestcastgroup.com', groupId: 'group-viewer', status: 'invited' },
-  // Developers are Administrators by default (full access, incl. Requirements & UAT).
-  // These accounts set their own password from the Login page (verified by email).
-  { id: 'user-neuroloom', userId: 'neurolooom@gmail.com', name: 'NeuroLooom (Developer)', email: 'neurolooom@gmail.com', groupId: 'group-admin', status: 'active' },
+  // Developers are Administrators by default. They also carry the 'dev:access'
+  // grant so they - and only they, not ordinary admins - can see the
+  // developer-only Requirements & UAT pages.
+  { id: 'user-neuroloom', userId: 'neurolooom@gmail.com', name: 'NeuroLooom (Developer)', email: 'neurolooom@gmail.com', groupId: 'group-admin', status: 'active', grants: ['dev:access'] },
   // NOTE: dev@bcit.com is a temporary developer address and is expected to
   // change - update the email/User ID here or via Admin > Users when it does.
-  { id: 'user-bcit-dev', userId: 'dev', name: 'BCIT Developer', email: 'dev@bcit.com', groupId: 'group-admin', status: 'invited' },
+  { id: 'user-bcit-dev', userId: 'dev', name: 'BCIT Developer', email: 'dev@bcit.com', groupId: 'group-admin', status: 'invited', grants: ['dev:access'] },
 ]
 
 /** userId of the demo admin that ships with a pre-seeded password (demo mode only). */

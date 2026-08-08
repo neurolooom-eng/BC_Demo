@@ -32,6 +32,7 @@ export const PERMISSION_CATALOG: PermissionMeta[] = [
   { key: 'ledgers:edit', module: 'Ledgers', label: 'Edit' },
   { key: 'admin:access', module: 'Admin', label: 'Users & Access' },
   { key: 'config:access', module: 'Developer', label: 'Backend Config' },
+  { key: 'dev:access', module: 'Developer', label: 'Requirements & UAT' },
 ]
 
 export const PERMISSION_MODULES = Array.from(new Set(PERMISSION_CATALOG.map((p) => p.module)))
