@@ -15,11 +15,13 @@
 import { authRequest, createRow, isConfigured, listRows, updateRow } from '../lib/sheetsClient'
 import { hashPassword, randomSalt, verifyPassword } from '../lib/passwordHash'
 import type { AccessRequest, User } from '../types/access'
-import { DEMO_ADMIN_PASSWORD, DEMO_ADMIN_USER_ID } from './users'
+import { DEMO_CREDENTIALS } from './users'
 
 const CRED_KEY = 'bestcast.credentials'
 const REQ_KEY = 'bestcast.accessRequests'
-const SEED_FLAG = 'bestcast.credentials.seeded'
+// Versioned: bump when the seeded DEMO_CREDENTIALS change so existing browsers
+// pick up new/updated demo logins on next load.
+const SEED_FLAG = 'bestcast.credentials.seeded.v2'
 
 type CredStore = Record<string, { salt: string; hash: string }>
 
@@ -71,11 +73,12 @@ export async function ensureSeeded(): Promise<void> {
   if (isConfigured()) return
   if (window.localStorage.getItem(SEED_FLAG)) return
   const store = readCreds()
-  if (!store[DEMO_ADMIN_USER_ID]) {
+  for (const { userId, password } of DEMO_CREDENTIALS) {
+    if (store[userId]) continue
     const salt = randomSalt()
-    store[DEMO_ADMIN_USER_ID] = { salt, hash: await hashPassword(DEMO_ADMIN_PASSWORD, salt) }
-    writeCreds(store)
+    store[userId] = { salt, hash: await hashPassword(password, salt) }
   }
+  writeCreds(store)
   window.localStorage.setItem(SEED_FLAG, '1')
 }
 

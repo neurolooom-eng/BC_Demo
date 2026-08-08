@@ -163,6 +163,36 @@ export const REQUIREMENTS: RequirementFeature[] = [
     ],
   },
   {
+    id: 'navigation',
+    feature: 'Configurable Navigation',
+    overview:
+      'Sidebar sections (module groups) can be shown or hidden. Supply Chain and Finance are hidden by default. Developers configure visibility from the Developer Config page; hiding a section does not remove its routes.',
+    requirements: [
+      {
+        id: 'REQ-NAV-01',
+        title: 'Default hidden modules',
+        priority: 'Must',
+        description: 'Supply Chain and Finance are hidden from navigation by default.',
+        acceptanceCriteria: [
+          'With no saved preference, the sidebar does not list Supply Chain or Finance.',
+          'Their routes remain defined and reachable by direct URL.',
+        ],
+      },
+      {
+        id: 'REQ-NAV-02',
+        title: 'Developer-configurable visibility',
+        priority: 'Must',
+        description: 'A developer can show or hide any sidebar section from the Developer Config page.',
+        acceptanceCriteria: [
+          'The Developer Config page lists every sidebar section with a Visible/Hidden toggle.',
+          'Toggling a section updates the sidebar immediately.',
+          'The choice persists across reloads.',
+          'The control is reachable only with the developer (config) permission.',
+        ],
+      },
+    ],
+  },
+  {
     id: 'docs',
     feature: 'Documentation (Knowledge Base, Requirements, UAT)',
     overview:

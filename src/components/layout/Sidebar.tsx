@@ -1,6 +1,7 @@
 import { ChevronsLeft, ChevronsRight, X } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { useAccess } from '../../context/AccessContext'
+import { useNavPrefs } from '../../context/NavPrefsContext'
 import { cn } from '../../lib/cn'
 import { Logo } from './Logo'
 import { NAV } from './nav'
@@ -14,10 +15,13 @@ interface SidebarProps {
 
 function SidebarContent({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: () => void }) {
   const { hasPermission } = useAccess()
-  const visibleGroups = NAV.map((group) => ({
-    ...group,
-    items: group.items.filter((item) => !item.permission || hasPermission(item.permission)),
-  })).filter((group) => group.items.length > 0)
+  const { isHidden } = useNavPrefs()
+  const visibleGroups = NAV.filter((group) => !isHidden(group.label))
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => !item.permission || hasPermission(item.permission)),
+    }))
+    .filter((group) => group.items.length > 0)
 
   return (
     <nav className="flex-1 space-y-4 overflow-y-auto px-2 py-4">

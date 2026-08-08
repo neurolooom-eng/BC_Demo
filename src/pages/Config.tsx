@@ -1,9 +1,12 @@
-import { CheckCircle2, ExternalLink, RefreshCw, Wrench, XCircle } from 'lucide-react'
+import { CheckCircle2, Eye, EyeOff, ExternalLink, RefreshCw, Wrench, XCircle } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { FormField } from '../components/ui/FormField'
 import buildInfo from '../build-info.json'
+import { useNavPrefs } from '../context/NavPrefsContext'
+import { NAV } from '../components/layout/nav'
+import { cn } from '../lib/cn'
 import * as sheets from '../lib/sheetsClient'
 import { DEFAULT_TAB_NAMES, getEffectiveExecUrl, getRuntimeConfig, setRuntimeConfig, type RuntimeConfig } from '../lib/runtimeConfig'
 
@@ -15,6 +18,7 @@ const SHEET_KEYS = Object.keys(DEFAULT_TAB_NAMES) as (keyof typeof DEFAULT_TAB_N
 
 export function Config() {
   const [form, setForm] = useState<RuntimeConfig>(getRuntimeConfig)
+  const { isHidden, toggleGroup } = useNavPrefs()
   const [saved, setSaved] = useState(false)
   const [checks, setChecks] = useState<Record<(typeof SHEET_KEYS)[number], CheckResult>>(
     Object.fromEntries(SHEET_KEYS.map((key) => [key, { status: 'idle' }])) as Record<(typeof SHEET_KEYS)[number], CheckResult>,
@@ -96,6 +100,39 @@ export function Config() {
             Test Connection
           </Button>
           {saved && <span className="text-xs text-success">Saved to this browser.</span>}
+        </div>
+      </Card>
+
+      <Card className="p-4">
+        <h2 className="mb-1 text-sm font-semibold text-text">Navigation & Modules</h2>
+        <p className="mb-3 text-xs text-muted">
+          Show or hide sidebar sections. Hidden sections are removed from the sidebar for this browser; pages still
+          exist and remain reachable by direct URL (for example <code className="text-[11px]">#/config</code>).
+        </p>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {NAV.map((group) => {
+            const hidden = isHidden(group.label)
+            return (
+              <div key={group.label} className="flex items-center justify-between gap-3 rounded-md border border-border px-3 py-2">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-text">{group.label}</p>
+                  <p className="truncate text-[11px] text-muted">{group.items.map((i) => i.label).join(', ')}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => toggleGroup(group.label)}
+                  className={cn(
+                    'btn shrink-0',
+                    hidden ? 'btn-outline text-muted' : 'btn-primary',
+                  )}
+                  aria-pressed={!hidden}
+                >
+                  {hidden ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {hidden ? 'Hidden' : 'Visible'}
+                </button>
+              </div>
+            )
+          })}
         </div>
       </Card>
 
