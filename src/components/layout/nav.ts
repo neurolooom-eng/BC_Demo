@@ -1,6 +1,9 @@
 import {
+  BookOpen,
   BookText,
+  ClipboardCheck,
   ClipboardList,
+  FileCheck2,
   FileText,
   LayoutDashboard,
   Package,
@@ -54,6 +57,14 @@ export const NAV: NavGroup[] = [
     items: [
       { to: '/accounts', label: 'Accounts', icon: Receipt, permission: 'accounts:view' },
       { to: '/ledgers', label: 'Ledgers', icon: BookText, permission: 'ledgers:view' },
+    ],
+  },
+  {
+    label: 'Documentation',
+    items: [
+      { to: '/knowledge-base', label: 'Knowledge Base', icon: BookOpen },
+      { to: '/requirements', label: 'Requirements', icon: FileCheck2, permission: 'config:access' },
+      { to: '/uat', label: 'UAT', icon: ClipboardCheck, permission: 'config:access' },
     ],
   },
   {
