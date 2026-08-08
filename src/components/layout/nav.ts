@@ -63,8 +63,8 @@ export const NAV: NavGroup[] = [
     label: 'Documentation',
     items: [
       { to: '/knowledge-base', label: 'Knowledge Base', icon: BookOpen },
-      { to: '/requirements', label: 'Requirements', icon: FileCheck2, permission: 'config:access' },
-      { to: '/uat', label: 'UAT', icon: ClipboardCheck, permission: 'config:access' },
+      { to: '/requirements', label: 'Requirements', icon: FileCheck2, permission: 'dev:access' },
+      { to: '/uat', label: 'UAT', icon: ClipboardCheck, permission: 'dev:access' },
     ],
   },
   {

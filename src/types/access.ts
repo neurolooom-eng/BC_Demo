@@ -23,6 +23,7 @@ export type Permission =
   | 'ledgers:edit'
   | 'admin:access'
   | 'config:access'
+  | 'dev:access'
 
 export interface Group {
   id: string

@@ -79,7 +79,7 @@ function AuthGate() {
           <Route
             path="requirements"
             element={
-              <RequirePermission permission="config:access">
+              <RequirePermission permission="dev:access">
                 <Requirements />
               </RequirePermission>
             }
@@ -87,7 +87,7 @@ function AuthGate() {
           <Route
             path="uat"
             element={
-              <RequirePermission permission="config:access">
+              <RequirePermission permission="dev:access">
                 <Uat />
               </RequirePermission>
             }

@@ -25,6 +25,9 @@ const ALL_PERMISSIONS: Permission[] = [
   'ledgers:edit',
   'admin:access',
   'config:access',
+  // Note: 'dev:access' (Requirements & UAT) is intentionally NOT part of the
+  // Administrator role - those docs are developer-only. It is held by the
+  // Developer role and granted per-user to developer accounts (src/data/users.ts).
 ]
 
 export const GROUPS: Group[] = [
@@ -38,7 +41,7 @@ export const GROUPS: Group[] = [
     id: 'group-developer',
     name: 'Developer',
     description: 'Technical access to wire up and verify the Google Sheets backend.',
-    permissions: ['dashboard:view', 'documents:view', 'specifications:view', 'checksheets:view', 'config:access'],
+    permissions: ['dashboard:view', 'documents:view', 'specifications:view', 'checksheets:view', 'config:access', 'dev:access'],
   },
   {
     id: 'group-quality-manager',

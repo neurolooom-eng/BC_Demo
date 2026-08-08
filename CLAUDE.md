@@ -28,10 +28,13 @@ Keep requirement and UAT IDs stable across changes so the cross-references hold.
   **per-user overrides** (`grants`/`revokes` on `User`). Effective access is
   `(role ∪ grants) − revokes` (see `hasPermission` in `AccessContext`).
 - Gate a route by wrapping its element in `<RequirePermission permission="…">`.
-  Developer-only pages use `config:access`; admin pages use `admin:access`.
-- **Developers are Administrators by default** (`group-admin`), which includes
-  `config:access`, so they can see the developer-only docs. Developer accounts
-  are seeded in `src/data/users.ts`.
+  Admin pages use `admin:access`; the backend Config page uses `config:access`.
+- **Requirements & UAT are developer-only** and use `dev:access` — deliberately
+  NOT part of the Administrator role, so ordinary admins cannot see them. The
+  Developer role holds `dev:access`; developer accounts (who are administrators)
+  hold it as a per-user `grants: ['dev:access']` entry.
+- **Developers are Administrators by default** (`group-admin`) plus the
+  `dev:access` grant. Developer accounts are seeded in `src/data/users.ts`.
 
 ## Conventions
 

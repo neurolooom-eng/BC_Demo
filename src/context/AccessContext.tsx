@@ -12,7 +12,7 @@ const SESSION_KEY = 'bestcast.session'
  * Versioned: bump when the seeded user list changes so existing browsers
  * adopt the new seed instead of a stale persisted copy.
  */
-const USERS_KEY = 'bestcast.users.v2'
+const USERS_KEY = 'bestcast.users.v3'
 
 interface AccessContextValue {
   users: User[]
