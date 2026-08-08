@@ -11,12 +11,15 @@ import { CheckSheets } from './pages/CheckSheets'
 import { Config } from './pages/Config'
 import { Dashboard } from './pages/Dashboard'
 import { Documents } from './pages/Documents'
+import { KnowledgeBase } from './pages/KnowledgeBase'
 import { Ledgers } from './pages/Ledgers'
 import { Login } from './pages/Login'
 import { Purchase } from './pages/Purchase'
+import { Requirements } from './pages/Requirements'
 import { Settings } from './pages/Settings'
 import { Specifications } from './pages/Specifications'
 import { Stores } from './pages/Stores'
+import { Uat } from './pages/Uat'
 
 /** Gates the whole app behind sign-in; renders the Login page when signed out. */
 function AuthGate() {
@@ -68,6 +71,23 @@ function AuthGate() {
             element={
               <RequirePermission permission="ledgers:view">
                 <Ledgers />
+              </RequirePermission>
+            }
+          />
+          <Route path="knowledge-base" element={<KnowledgeBase />} />
+          <Route
+            path="requirements"
+            element={
+              <RequirePermission permission="config:access">
+                <Requirements />
+              </RequirePermission>
+            }
+          />
+          <Route
+            path="uat"
+            element={
+              <RequirePermission permission="config:access">
+                <Uat />
               </RequirePermission>
             }
           />
