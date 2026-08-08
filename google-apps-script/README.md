@@ -6,7 +6,7 @@ keeps the whole stack free to run and host on GitHub Pages.
 
 ## 1. Create the spreadsheet
 
-Create a new Google Sheet with **eleven tabs**, named exactly as below, each
+Create a new Google Sheet with **thirteen tabs**, named exactly as below, each
 with a header row (row 1) with these exact column names:
 
 ### `Specifications`
@@ -93,8 +93,31 @@ id  voucherNo  type  party  amount  voucherDate  dueDate  status  paymentMode  r
 id  accountCode  accountName  group  openingBalance  debit  credit  asOfDate
 ```
 
-All of these except `CheckSheets` and `PurchaseOrders` are flat records (no
-JSON-text columns) - they go through the Sheets API as plain rows.
+### `Users`
+
+```
+id  userId  name  email  groupId  status  grants  revokes  passwordHash  passwordSalt
+```
+
+Backs the Login page and Admin > Users. `userId` is the login handle; `status`
+is `invited` | `active` | `disabled`. `grants` and `revokes` hold **JSON text**
+(arrays of per-user permission overrides on top of the role - the frontend
+serialises/parses them). `passwordHash` and `passwordSalt` are written **only**
+by this script's `auth` action (salted SHA-256, never plaintext) and are never
+returned by GET reads - leave them blank when seeding and let users set a
+password from the Login page.
+
+### `AccessRequests`
+
+```
+id  name  email  requestedRole  note  status  createdAt
+```
+
+Backs the Login page's "Request access" form and Admin > Requests. `status` is
+`pending` | `approved` | `rejected`.
+
+All of these except `CheckSheets`, `PurchaseOrders` and `Users` are flat records
+(no JSON-text columns) - they go through the Sheets API as plain rows.
 
 You can seed the sheets with the data already in `src/data/*.ts` (export
 those arrays as CSV, or leave the tabs empty to start recording live).
@@ -143,14 +166,34 @@ on POST) and opens that spreadsheet via `SpreadsheetApp.openById` instead of
 the one the script is bound to. The Config page's "Spreadsheet ID" field
 sets this - leave it blank to use the bound spreadsheet (the common case).
 
+## Sign-in (auth) endpoint
+
+The `Users` tab doubles as the credential store. POST `{ action: 'auth', ... }`
+requests are handled specially:
+
+- `authAction: 'login'` - `{ userId, password }` → `{ ok: true }` or
+  `{ ok: false, reason }` (`unknown-user` | `invalid` | `no-password` |
+  `disabled`). The stored hash is compared server-side and never leaves the
+  sheet.
+- `authAction: 'setPassword'` - `{ userId, password }` generates a fresh salt,
+  stores the salted SHA-256 hash, and flips the user's `status` to `active`.
+  Used for both first-time password set and self-service reset.
+
+Hashing is salted SHA-256 over `` `${salt}:${password}` `` - identical to the
+browser demo (`src/lib/passwordHash.ts`), so a password set while offline
+verifies once the sheet is wired up. This is adequate for a pilot but is **not**
+a substitute for a real password KDF (bcrypt/scrypt/Argon2) behind a trusted
+server; when moving to Supabase, delegate auth to it.
+
 ## Notes / limitations (POC)
 
-- No auth on the Web App beyond "Anyone with the link can call it" - anyone
-  who has the URL can read/append rows. Fine for a pilot; put real auth
-  (e.g. a shared secret query param checked in `doGet`/`doPost`, or moving to
-  a real backend) in front of it before wider rollout.
-- `update` only supports updating an existing row matched by `id`; there is
-  no delete endpoint since no UI currently needs one.
+- No transport auth on the Web App beyond "Anyone with the link can call it" -
+  anyone who has the URL can read/append non-credential rows and attempt logins.
+  Credential columns (`passwordHash`/`passwordSalt`) are never returned by GET,
+  but put real auth (a shared secret checked in `doGet`/`doPost`, or a real
+  backend) in front of it before wider rollout.
+- `create`, `update` (matched by `id`) and `delete` (matched by `id`) are
+  supported.
 - Apps Script Web Apps don't support CORS preflight, so the client
   (`src/lib/sheetsClient.ts`) sends POST bodies as `text/plain` to keep
   requests "simple" (no preflight) and parses the JSON server-side anyway.

@@ -22,6 +22,8 @@ export type SheetName =
   | 'StockTransferEntries'
   | 'AccountVouchers'
   | 'LedgerAccounts'
+  | 'Users'
+  | 'AccessRequests'
 
 export function isConfigured() {
   return Boolean(getEffectiveExecUrl())
@@ -68,4 +70,18 @@ export function createRow<T>(sheet: SheetName, data: T) {
 
 export function updateRow<T>(sheet: SheetName, id: string, data: T) {
   return post({ sheet: tabNameFor(sheet), action: 'update', id, data })
+}
+
+export function deleteRow(sheet: SheetName, id: string) {
+  return post({ sheet: tabNameFor(sheet), action: 'delete', id })
+}
+
+/**
+ * Auth actions handled server-side by Code.gs (login / setPassword). The
+ * password is sent over the wire but the stored hash never leaves the sheet
+ * - `login` returns only whether the credentials matched. The Users tab name
+ * is passed through so the script knows where credentials live.
+ */
+export function authRequest(authAction: 'login' | 'setPassword', payload: Record<string, unknown>) {
+  return post({ action: 'auth', authAction, usersTab: tabNameFor('Users'), ...payload })
 }

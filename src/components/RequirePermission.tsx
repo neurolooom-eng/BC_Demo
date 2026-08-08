@@ -12,8 +12,8 @@ export function RequirePermission({ permission, children }: { permission: Permis
         <ShieldAlert className="h-8 w-8 text-warning" />
         <h1 className="text-lg font-semibold text-text">Access restricted</h1>
         <p className="max-w-sm text-sm text-muted">
-          Your current group doesn't have the <code className="text-xs">{permission}</code> permission. Switch to a
-          user with access from the topbar, or ask an Administrator to grant it.
+          Your account doesn't have the <code className="text-xs">{permission}</code> permission. Ask an
+          Administrator to grant it via your role or your specific access.
         </p>
       </div>
     )

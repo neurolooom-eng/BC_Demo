@@ -18,6 +18,8 @@ export const DEFAULT_TAB_NAMES = {
   StockTransferEntries: 'StockTransferEntries',
   AccountVouchers: 'AccountVouchers',
   LedgerAccounts: 'LedgerAccounts',
+  Users: 'Users',
+  AccessRequests: 'AccessRequests',
 } as const
 
 export interface RuntimeConfig {

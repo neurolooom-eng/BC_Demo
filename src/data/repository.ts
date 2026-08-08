@@ -1,5 +1,6 @@
 import * as sheets from '../lib/sheetsClient'
 import type { SheetName } from '../lib/sheetsClient'
+import type { User } from '../types/access'
 import type { CheckSheetRecord, QmsDocument, Specification } from '../types/domain'
 import type {
   AccountVoucher,
@@ -20,6 +21,7 @@ import { PURCHASE_ORDERS } from './purchaseOrders'
 import { SPECIFICATIONS } from './specifications'
 import { STOCK_IN_ENTRIES, STOCK_OUT_ENTRIES, STOCK_TRANSFER_ENTRIES } from './stockTransactions'
 import { STORE_ITEMS } from './storeItems'
+import { USERS } from './users'
 
 /**
  * Data-access layer. Reads/writes go through the Google Sheets backend
@@ -160,3 +162,10 @@ const ledgerAccountResource = simpleResource<LedgerAccount>('LedgerAccounts', LE
 export const loadLedgerAccounts = ledgerAccountResource.load
 export const saveLedgerAccount = ledgerAccountResource.save
 export const updateLedgerAccount = ledgerAccountResource.update
+
+// Users carry array fields (per-user grants/revokes) that don't fit flat
+// columns, so they go through the sheet as JSON-text like check sheets do.
+const userResource = jsonFieldResource<User>('Users', USERS, ['grants', 'revokes'] as const)
+export const loadUsers = userResource.load
+export const saveUser = userResource.save
+export const updateUser = userResource.update
