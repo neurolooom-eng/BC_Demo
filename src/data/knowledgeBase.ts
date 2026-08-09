@@ -239,6 +239,60 @@ export const KB_ARTICLES: KbArticle[] = [
       },
     ],
   },
+  {
+    id: 'process-check-sheet-day',
+    title: 'Process Check Sheet & Day Printout',
+    category: 'Production',
+    audience: 'All users',
+    summary: 'How the daily Process Check Sheet is structured, how out-of-spec values are flagged, and how to print the day sheet with all shifts.',
+    updated: '2026-08-09',
+    sections: [
+      {
+        heading: 'Overview',
+        body: [
+          'The Process Check Sheet (form QC FMT 038) records melting, degassing, pouring and die parameters for a line across a whole day. One sheet covers all three shifts, with readings taken every 30 minutes.',
+        ],
+      },
+      {
+        heading: 'How the day is captured',
+        bullets: [
+          'Day header — set once: date, line, metal grade, degassing gas, furnace, alloys.',
+          'Time-slot readings — every 30 minutes across all shifts (melting temp, coverall, pressure, flow, rotor RPM, gas checking, room temp, humidity, pouring temp, etc.).',
+          'Machine entry — per machine: BC no, die coat thickness, pre-heat, cooling/pouring/tilting times, and a per-slot Die Temp reading.',
+          'Shift close-out — per shift: core-pin cavity verification, operator and supervisor sign-off.',
+          'Startup checks — once a day: die pre-heat, coatings, DPT, rejects at start, error-proofs.',
+        ],
+      },
+      {
+        heading: 'Out-of-spec highlighting',
+        body: [
+          'Every measured parameter has a spec range. Any reading outside its range is shown in red on screen and on the printout, and (with the backend connected) an email alert is sent to the configured recipients.',
+        ],
+      },
+      {
+        heading: 'Printing the day sheet',
+        steps: [
+          'Open Production → Day Check Sheet (Print).',
+          'Review the sheet; out-of-spec cells are red.',
+          'Select Print — the sheet prints as one landscape page per day, with all three shifts, matching the QC FMT 038 layout.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'Why is a reading shown in red?',
+        a: 'It is outside the parameter’s spec range (for example melting temp above 740°C). Red means out-of-spec, which also triggers an alert to the admin/QA.',
+      },
+      {
+        q: 'Does one printout include all three shifts?',
+        a: 'Yes. The day print is a single sheet per date covering 1st, 2nd and 3rd shift side by side, in 30-minute columns, exactly like the paper form.',
+      },
+      {
+        q: 'Can the spec limits be changed?',
+        a: 'Yes — the limits live in the Parameters master (a Google Sheet tab), so an administrator/developer can adjust them without code changes.',
+      },
+    ],
+  },
 ]
 
 export const KB_CATEGORIES = Array.from(new Set(KB_ARTICLES.map((a) => a.category)))

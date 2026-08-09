@@ -40,6 +40,10 @@ function doPost(e) {
     return jsonResponse(handleAuth(body))
   }
 
+  if (body.action === 'alert') {
+    return jsonResponse(handleAlert(body))
+  }
+
   var sheet = getSheet(body.sheet, body.spreadsheetId)
 
   if (body.action === 'create') {
@@ -85,6 +89,66 @@ function authSetPassword(sheet, userId, password) {
   setCell(sheet, found.rowIndex, found.headers, 'passwordHash', hash)
   setCell(sheet, found.rowIndex, found.headers, 'status', 'active')
   return { ok: true }
+}
+
+// --------------------------------------------------------------------------
+// Out-of-spec email alerts (Process Check Sheet)
+// --------------------------------------------------------------------------
+
+/**
+ * Email the configured recipients when a reading breaches spec, and log the
+ * breach to the Alerts tab. Body:
+ *   { action:'alert', recipientsTab, alertsTab, spreadsheetId?,
+ *     alert: { daySheetId, parameterCode, machineId, shiftId, slotTime,
+ *              value, min, max, severity, lineId } }
+ */
+function handleAlert(body) {
+  var a = body.alert || {}
+  var recipients = readActiveRecipients(getSheet(body.recipientsTab, body.spreadsheetId), a)
+  var subject = 'e-QMS out-of-spec: ' + a.parameterCode + ' = ' + a.value + ' (spec ' + a.min + '-' + a.max + ')'
+  var lines = [
+    'An out-of-spec reading was recorded on the Process Check Sheet.',
+    '',
+    'Parameter : ' + a.parameterCode,
+    'Value     : ' + a.value + '  (spec ' + a.min + ' - ' + a.max + ')',
+    'Severity  : ' + (a.severity || 'Warning'),
+    'Line      : ' + (a.lineId || ''),
+    'Machine   : ' + (a.machineId || ''),
+    'Shift     : ' + (a.shiftId || '') + '  Slot: ' + (a.slotTime || ''),
+    'Day sheet : ' + (a.daySheetId || ''),
+  ].join('\n')
+
+  if (recipients.length) {
+    MailApp.sendEmail(recipients.join(','), subject, lines)
+  }
+
+  // Log to Alerts tab if provided.
+  if (body.alertsTab) {
+    var log = getSheet(body.alertsTab, body.spreadsheetId)
+    appendRow(log, {
+      id: 'AL-' + new Date().getTime(),
+      daySheetId: a.daySheetId, parameterCode: a.parameterCode, machineId: a.machineId,
+      shiftId: a.shiftId, slotTime: a.slotTime, value: a.value, min: a.min, max: a.max,
+      severity: a.severity || 'Warning', emailedTo: recipients.join(','), emailedAt: new Date(),
+    })
+  }
+  return { ok: true, notified: recipients.length }
+}
+
+function readActiveRecipients(sheet, alert) {
+  var values = sheet.getDataRange().getValues()
+  var h = values[0]
+  var iEmail = h.indexOf('email'), iActive = h.indexOf('active'), iScope = h.indexOf('scope'), iLine = h.indexOf('lineId'), iSev = h.indexOf('minSeverity')
+  var out = []
+  var wantCritical = String(alert.severity || 'Warning') === 'Critical'
+  for (var i = 1; i < values.length; i++) {
+    var row = values[i]
+    if (iActive !== -1 && String(row[iActive]).toUpperCase() !== 'TRUE') continue
+    if (iScope !== -1 && String(row[iScope]) === 'Line' && iLine !== -1 && String(row[iLine]) !== String(alert.lineId || '')) continue
+    if (iSev !== -1 && String(row[iSev]) === 'Critical' && !wantCritical) continue
+    if (iEmail !== -1 && row[iEmail]) out.push(String(row[iEmail]))
+  }
+  return out
 }
 
 function findUserRow(sheet, userId) {

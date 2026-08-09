@@ -148,6 +148,49 @@ export const UAT_SUITES: UatFeature[] = [
     ],
   },
   {
+    id: 'pcs',
+    feature: 'Process Check Sheet (QC FMT 038)',
+    cases: [
+      {
+        id: 'UAT-PCS-01',
+        requirement: 'REQ-PCS-06',
+        title: 'Day print shows all three shifts on one sheet',
+        preconditions: 'Signed in with check-sheet access.',
+        steps: ['Open Production → Day Check Sheet (Print).', 'Inspect the reading grid header.'],
+        expected: 'One sheet shows 1st, 2nd and 3rd shift side by side with 30-minute slot columns.',
+      },
+      {
+        id: 'UAT-PCS-02',
+        requirement: 'REQ-PCS-04',
+        title: 'Out-of-spec readings are red',
+        steps: ['On the Day Check Sheet, find a value outside its spec (e.g. melting temp 745 vs 720–740).'],
+        expected: 'The out-of-spec value renders red; in-range values render normally. The out-of-spec summary lists them.',
+      },
+      {
+        id: 'UAT-PCS-03',
+        requirement: 'REQ-PCS-01',
+        title: 'All sections present',
+        steps: ['Scroll the Day Check Sheet.'],
+        expected: 'Header, slot-reading grid, machine sub-grid with Die Temp, per-shift core-pin block, startup block and signatures are all shown.',
+      },
+      {
+        id: 'UAT-PCS-04',
+        requirement: 'REQ-PCS-06',
+        title: 'Printing yields a landscape day sheet',
+        steps: ['Select Print.', 'Review the print preview.'],
+        expected: 'Only the check sheet prints, in landscape, reproducing the QC FMT 038 layout with out-of-spec cells red.',
+      },
+      {
+        id: 'UAT-PCS-05',
+        requirement: 'REQ-PCS-03',
+        title: 'Spec limits come from the Parameters master',
+        preconditions: 'Backend connected with a Parameters tab.',
+        steps: ['Change a parameter’s min/max in the Parameters tab.', 'Reload the Day Check Sheet.'],
+        expected: 'Highlighting reflects the new limits without any code change.',
+      },
+    ],
+  },
+  {
     id: 'navigation',
     feature: 'Configurable Navigation',
     cases: [

@@ -11,6 +11,7 @@ import { Admin } from './pages/Admin'
 import { CheckSheets } from './pages/CheckSheets'
 import { Config } from './pages/Config'
 import { Dashboard } from './pages/Dashboard'
+import { DayCheckSheet } from './pages/DayCheckSheet'
 import { Documents } from './pages/Documents'
 import { KnowledgeBase } from './pages/KnowledgeBase'
 import { Ledgers } from './pages/Ledgers'
@@ -43,6 +44,14 @@ function AuthGate() {
           <Route path="documents" element={<Documents />} />
           <Route path="specifications" element={<Specifications />} />
           <Route path="check-sheets" element={<CheckSheets />} />
+          <Route
+            path="day-check-sheet"
+            element={
+              <RequirePermission permission="checksheets:view">
+                <DayCheckSheet />
+              </RequirePermission>
+            }
+          />
           <Route
             path="purchase"
             element={

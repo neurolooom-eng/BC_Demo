@@ -20,6 +20,27 @@ export const DEFAULT_TAB_NAMES = {
   LedgerAccounts: 'LedgerAccounts',
   Users: 'Users',
   AccessRequests: 'AccessRequests',
+  // Process Check Sheet masters (see docs/MASTERS.md)
+  Lines: 'Lines',
+  Machines: 'Machines',
+  Furnaces: 'Furnaces',
+  Shifts: 'Shifts',
+  MetalGrades: 'MetalGrades',
+  Alloys: 'Alloys',
+  Gases: 'Gases',
+  Coatings: 'Coatings',
+  Employees: 'Employees',
+  Parameters: 'Parameters',
+  AlertRecipients: 'AlertRecipients',
+  FieldDefinitions: 'FieldDefinitions',
+  // Process Check Sheet transactions
+  DaySheets: 'DaySheets',
+  DaySheetMachines: 'DaySheetMachines',
+  Readings: 'Readings',
+  CorePinChecks: 'CorePinChecks',
+  Startups: 'Startups',
+  ShiftSignoffs: 'ShiftSignoffs',
+  Alerts: 'Alerts',
 } as const
 
 export interface RuntimeConfig {

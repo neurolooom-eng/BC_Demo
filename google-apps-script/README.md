@@ -166,6 +166,25 @@ on POST) and opens that spreadsheet via `SpreadsheetApp.openById` instead of
 the one the script is bound to. The Config page's "Spreadsheet ID" field
 sets this - leave it blank to use the bound spreadsheet (the common case).
 
+## Process Check Sheet tabs (QC FMT 038)
+
+The Process Check Sheet module adds a set of **master** tabs (Lines, Machines,
+Furnaces, Shifts, MetalGrades, Alloys, Gases, Coatings, Employees, Parameters,
+AlertRecipients, FieldDefinitions) and **transaction** tabs (DaySheets,
+DaySheetMachines, Readings, CorePinChecks, Startups, ShiftSignoffs, Alerts).
+The **exact column headers for every one of these tabs** are in
+[`../docs/MASTERS.md`](../docs/MASTERS.md) — create each tab with row 1 as the
+listed headers. The `Parameters` tab holds the spec `min`/`max` that drive
+out-of-spec highlighting and alerts.
+
+## Out-of-spec alert endpoint
+
+POST `{ action: 'alert', recipientsTab: 'AlertRecipients', alertsTab: 'Alerts',
+alert: {...} }` emails the active recipients (via `MailApp`) for an out-of-spec
+reading and logs a row to the `Alerts` tab. Recipients are filtered by `active`,
+`scope` (All/Line) and `minSeverity`. The frontend calls this after saving a
+reading whose value is outside its parameter's `min`/`max`.
+
 ## Sign-in (auth) endpoint
 
 The `Users` tab doubles as the credential store. POST `{ action: 'auth', ... }`
