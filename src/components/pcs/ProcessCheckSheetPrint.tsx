@@ -1,5 +1,5 @@
 import { assetUrl } from '../../lib/assetUrl'
-import { DIE_TEMP_PARAM, isOutOfSpec, PCS_SHIFTS, readingValue, SLOT_LINE_PARAMS, slotEntryMap } from '../../data/pcs'
+import { DIE_TEMP_PARAM, isOutOfSpec, machineActiveAt, PCS_SHIFTS, readingValue, slotIndex, SLOT_LINE_PARAMS, slotEntryMap } from '../../data/pcs'
 import type { DaySheet } from '../../types/pcs'
 
 /**
@@ -121,21 +121,29 @@ export function ProcessCheckSheetPrint({ sheet }: { sheet: DaySheet }) {
             </tr>
           </thead>
           <tbody>
-            {sheet.machines.map((mc) => (
-              <tr key={mc.machineCode}>
-                <td className={`${cell} font-semibold`}>{mc.machineCode}</td>
-                <td className={cell}>{mc.bcNo}</td>
-                <td className={cell}>{mc.dieCoatThickness}</td>
-                <td className={cell}>{mc.diePreheatTemp}</td>
-                <td className={cell}>{mc.coolingTime}</td>
-                <td className={cell}>{mc.pouringTime}</td>
-                <td className={cell}>{mc.tiltingTime}</td>
-                <td className={cell}>{mc.degasKillingTime}</td>
-                {flatSlots.map((c, i) => (
-                  <ValueCell key={i} code="DIE_TEMP" shift={c.shift} slot={c.slot} mc={mc.machineCode} />
-                ))}
-              </tr>
-            ))}
+            {[...sheet.machines]
+              .sort((a, b) => slotIndex(a.activeFromShift, a.activeFromSlot) - slotIndex(b.activeFromShift, b.activeFromSlot) || a.machineCode.localeCompare(b.machineCode))
+              .map((mc) => (
+                <tr key={mc.machineCode}>
+                  <td className={`${cell} font-semibold`}>{mc.machineCode}</td>
+                  <td className={cell}>{mc.bcNo}</td>
+                  <td className={cell}>{mc.dieCoatThickness}</td>
+                  <td className={cell}>{mc.diePreheatTemp}</td>
+                  <td className={cell}>{mc.coolingTime}</td>
+                  <td className={cell}>{mc.pouringTime}</td>
+                  <td className={cell}>{mc.tiltingTime}</td>
+                  <td className={cell}>{mc.degasKillingTime}</td>
+                  {flatSlots.map((c, i) =>
+                    machineActiveAt(mc, c.shift, c.slot) ? (
+                      <ValueCell key={i} code="DIE_TEMP" shift={c.shift} slot={c.slot} mc={mc.machineCode} />
+                    ) : (
+                      <td key={i} className={`${cell} text-black/30`} style={{ width: SLOT_W, minWidth: SLOT_W, fontSize: 6 }}>
+                        N/A
+                      </td>
+                    ),
+                  )}
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

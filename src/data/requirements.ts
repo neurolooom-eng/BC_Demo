@@ -271,6 +271,27 @@ export const REQUIREMENTS: RequirementFeature[] = [
           'Printing forces the red background with white text regardless of theme.',
         ],
       },
+      {
+        id: 'REQ-PCS-11',
+        title: 'Machines added mid-day with N/A back-fill',
+        priority: 'Must',
+        description: 'Machines can be added at any time slot during the day; each captures hourly readings from its start slot onward, and slots before it started print N/A.',
+        acceptanceCriteria: [
+          'A machine can be added at the selected shift + time slot (up to the machine limit).',
+          'The hourly form only shows machines active at the selected slot for entry.',
+          'On the day print, slots before a machine started show N/A for that machine; from its start slot onward they show readings.',
+        ],
+      },
+      {
+        id: 'REQ-PCS-12',
+        title: 'Print from the check sheet',
+        priority: 'Should',
+        description: 'The day sheet can be previewed and printed from within the hourly entry page, not only the separate print page.',
+        acceptanceCriteria: [
+          'The hourly entry page offers a day-sheet preview and a Print action.',
+          'Printing yields the same QC FMT 038 landscape sheet.',
+        ],
+      },
     ],
   },
   {

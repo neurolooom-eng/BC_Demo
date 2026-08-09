@@ -5,7 +5,7 @@
  * this bundled data lets the day print render standalone.
  */
 
-import type { DaySheet, PcsParameter, PcsShift, PcsSlotEntry } from '../types/pcs'
+import type { DaySheet, PcsMachineSetup, PcsParameter, PcsShift, PcsSlotEntry } from '../types/pcs'
 
 /** Maximum machines captured on a single day sheet. */
 export const MAX_MACHINES_PER_DAY = 10
@@ -75,6 +75,21 @@ export const PCS_SHIFTS: PcsShift[] = [
   { code: 'III', name: '3rd Shift', slots: genSlots('22:30', 16) },
 ]
 
+/** Machine codes available to add to a day sheet (from the Machines master). */
+export const MACHINE_CODES = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14']
+
+/** All slots across the day in order, so machine "active from" can be compared. */
+export const FLAT_SLOTS = PCS_SHIFTS.flatMap((s) => s.slots.map((slot) => ({ shift: s.code, slot })))
+
+export function slotIndex(shift: string, slot: string): number {
+  return FLAT_SLOTS.findIndex((f) => f.shift === shift && f.slot === slot)
+}
+
+/** A machine is active at a slot from the slot it was added onward. */
+export function machineActiveAt(m: { activeFromShift: string; activeFromSlot: string }, shift: string, slot: string): boolean {
+  return slotIndex(shift, slot) >= slotIndex(m.activeFromShift, m.activeFromSlot)
+}
+
 // --- Demo day sheet (mirrors the scanned form) ------------------------------
 
 // Deterministic pseudo-random so the demo is stable across renders/builds.
@@ -96,8 +111,15 @@ const JITTER: Record<string, number> = {
 }
 const HOLD_TAGS = ['1W', '2W', '3W', '1B', '2B']
 
-/** Machine codes that have hourly readings on the demo day. */
-export const DEMO_MACHINE_CODES = ['06', '04', '12']
+/**
+ * Demo machines. M/C 06 and 04 start at shift-open (06:30); M/C 12 is added
+ * mid-morning at 10:00 — so slots 06:30–09:30 print N/A for it.
+ */
+export const DEMO_MACHINES: PcsMachineSetup[] = [
+  { machineCode: '06', bcNo: '674', dieCoatThickness: 130, diePreheatTemp: 249, coolingTime: 180, pouringTime: 9, tiltingTime: 14, degasKillingTime: 16, activeFromShift: 'I', activeFromSlot: '06:30' },
+  { machineCode: '04', bcNo: '712', dieCoatThickness: 130, diePreheatTemp: 249, coolingTime: 180, pouringTime: 9, tiltingTime: 14, degasKillingTime: 16, activeFromShift: 'I', activeFromSlot: '06:30' },
+  { machineCode: '12', bcNo: '674', dieCoatThickness: 132, diePreheatTemp: 247, coolingTime: 180, pouringTime: 9, tiltingTime: 15, degasKillingTime: 16, activeFromShift: 'I', activeFromSlot: '10:00' },
+]
 
 /** Build one hourly child record (PcsSlotEntry) per shift × slot. */
 function buildDemoSlotEntries(): PcsSlotEntry[] {
@@ -123,9 +145,11 @@ function buildDemoSlotEntries(): PcsSlotEntry[] {
         line[p.code] = p.dataType === 'Decimal' ? Math.round(v * 100) / 100 : Math.round(v)
       }
       const machines: Record<string, Record<string, string | number>> = {}
-      for (const mc of DEMO_MACHINE_CODES) {
+      for (const mc of DEMO_MACHINES) {
+        // Only machines active at this slot get a reading; earlier slots stay N/A.
+        if (!machineActiveAt(mc, shift.code, slot)) continue
         const v = NOMINAL.DIE_TEMP + (rnd() - 0.5) * 2 * JITTER.DIE_TEMP
-        machines[mc] = { DIE_TEMP: Math.round(v) }
+        machines[mc.machineCode] = { DIE_TEMP: Math.round(v) }
       }
       entries.push({ id: `${shift.code}-${slot}`, shiftCode: shift.code, slot, line, machines })
     }
@@ -161,11 +185,7 @@ export const DEMO_DAY_SHEET: DaySheet = {
   bestCastAlloy: true,
   otherAlloy: false,
   inChargeSign: 'Viknesh',
-  machines: [
-    { machineCode: '06', bcNo: '674', dieCoatThickness: 130, diePreheatTemp: 249, coolingTime: 180, pouringTime: 9, tiltingTime: 14, degasKillingTime: 16 },
-    { machineCode: '04', bcNo: '712', dieCoatThickness: 130, diePreheatTemp: 249, coolingTime: 180, pouringTime: 9, tiltingTime: 14, degasKillingTime: 16 },
-    { machineCode: '12', bcNo: '674', dieCoatThickness: 132, diePreheatTemp: 247, coolingTime: 180, pouringTime: 9, tiltingTime: 15, degasKillingTime: 16 },
-  ],
+  machines: DEMO_MACHINES,
   slotEntries: buildDemoSlotEntries(),
   corePins: [
     { shiftCode: 'I', cavities: Array(10).fill(true), comment: 'Core pin verified' },

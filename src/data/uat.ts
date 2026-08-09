@@ -213,6 +213,23 @@ export const UAT_SUITES: UatFeature[] = [
         steps: ['View an out-of-spec cell on a light theme.', 'Switch to a dark theme (Settings → Theme).'],
         expected: 'Light theme shows red background/white text; dark theme shows the inverted highlight; printing uses red background/white text.',
       },
+      {
+        id: 'UAT-PCS-09',
+        requirement: 'REQ-PCS-11',
+        title: 'Add a machine mid-day and see N/A back-fill',
+        steps: [
+          'In Hourly Readings, select a slot (e.g. 10:00) and add a new machine.',
+          'Open the day sheet / print.',
+        ],
+        expected: 'The new machine shows readings from 10:00 onward and N/A for every slot before 10:00. Earlier slots on the form do not show the new machine for entry.',
+      },
+      {
+        id: 'UAT-PCS-10',
+        requirement: 'REQ-PCS-12',
+        title: 'Print from the hourly entry page',
+        steps: ['On Hourly Readings, select “Day sheet & print”.', 'Choose Print.'],
+        expected: 'A day-sheet preview appears in place and prints as the QC FMT 038 landscape sheet.',
+      },
     ],
   },
   {
