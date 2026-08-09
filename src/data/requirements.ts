@@ -291,6 +291,7 @@ export const REQUIREMENTS: RequirementFeature[] = [
         description: 'The day sheet can be previewed and printed from within the hourly entry page, not only the separate print page.',
         acceptanceCriteria: [
           'The hourly entry page offers a day-sheet preview and a Print action.',
+          'The Process Check Sheets page and each open check-sheet record offer a Print / Day-sheet action that opens the day print.',
           'Printing yields the same QC FMT 038 landscape sheet.',
         ],
       },

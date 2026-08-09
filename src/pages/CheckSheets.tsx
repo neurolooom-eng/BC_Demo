@@ -1,5 +1,6 @@
-import { ClipboardList, Plus } from 'lucide-react'
+import { ClipboardList, Plus, Printer } from 'lucide-react'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { CheckSheetForm } from '../components/checksheet/CheckSheetForm'
 import { emptyCheckSheet } from '../components/checksheet/emptyCheckSheet'
 import { Button } from '../components/ui/Button'
@@ -102,11 +103,18 @@ export function CheckSheets() {
             </p>
           </div>
         </div>
-        {canCreate && (
-          <Button icon={<Plus className="h-4 w-4" />} onClick={openNew}>
-            New Check Sheet
-          </Button>
-        )}
+        <div className="flex flex-wrap gap-2">
+          <Link to="/day-check-sheet">
+            <Button variant="outline" icon={<Printer className="h-4 w-4" />}>
+              Day sheet &amp; print
+            </Button>
+          </Link>
+          {canCreate && (
+            <Button icon={<Plus className="h-4 w-4" />} onClick={openNew}>
+              New Check Sheet
+            </Button>
+          )}
+        </div>
       </div>
 
       {loading ? (
@@ -123,6 +131,13 @@ export function CheckSheets() {
         subtitle="QC FMT 038 · Rev.10"
         footer={
           <>
+            {!isNew && (
+              <Link to="/day-check-sheet">
+                <Button variant="outline" icon={<Printer className="h-4 w-4" />}>
+                  Print
+                </Button>
+              </Link>
+            )}
             <Button variant="outline" onClick={close}>
               {isNew ? 'Cancel' : 'Close'}
             </Button>
