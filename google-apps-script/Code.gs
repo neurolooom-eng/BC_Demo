@@ -102,9 +102,15 @@ function authSetPassword(sheet, userId, password) {
  *     alert: { daySheetId, parameterCode, machineId, shiftId, slotTime,
  *              value, min, max, severity, lineId } }
  */
+// Test recipient used only when the AlertRecipients tab has no match yet
+// (until the User Master is ready - see BACKLOG.md). Remove once recipients
+// are managed from the User Master.
+var TEST_ALERT_RECIPIENT = 'neurolooom@gmail.com'
+
 function handleAlert(body) {
   var a = body.alert || {}
   var recipients = readActiveRecipients(getSheet(body.recipientsTab, body.spreadsheetId), a)
+  if (!recipients.length) recipients = [TEST_ALERT_RECIPIENT]
   var subject = 'e-QMS out-of-spec: ' + a.parameterCode + ' = ' + a.value + ' (spec ' + a.min + '-' + a.max + ')'
   var lines = [
     'An out-of-spec reading was recorded on the Process Check Sheet.',
