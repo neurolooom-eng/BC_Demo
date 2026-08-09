@@ -286,13 +286,15 @@ export const REQUIREMENTS: RequirementFeature[] = [
       },
       {
         id: 'REQ-PCS-12',
-        title: 'Print from the check sheet',
-        priority: 'Should',
-        description: 'The day sheet can be previewed and printed from within the hourly entry page, not only the separate print page.',
+        title: 'Single sheet workflow: start → log → sign off → print',
+        priority: 'Must',
+        description: 'One Process Check Sheet is worked as a guided flow: the operator starts it (shift/day header + machine details), logs hourly readings across all shifts, then the in-charge signs off; only a signed-off sheet can be printed.',
         acceptanceCriteria: [
-          'The hourly entry page offers a day-sheet preview and a Print action.',
-          'The Process Check Sheets page and each open check-sheet record offer a Print / Day-sheet action that opens the day print.',
-          'Printing yields the same QC FMT 038 landscape sheet.',
+          'The Day Check Sheet page has three steps: Sheet details, Hourly readings, Sign-off & print.',
+          'Step 1 captures the shift/day header and machine (die) details; step 2 logs hourly readings; step 3 records per-shift and in-charge sign-off.',
+          'Print is disabled until the in-charge has signed off; sign-off requires an in-charge name and locks the sheet (editing disabled).',
+          'A signed-off sheet can be reopened for corrections; printing yields the QC FMT 038 landscape sheet.',
+          'The Process Check Sheets page and each open record offer a link to the day sheet.',
         ],
       },
       {

@@ -277,11 +277,12 @@ export const KB_ARTICLES: KbArticle[] = [
         ],
       },
       {
-        heading: 'Printing the day sheet',
+        heading: 'The sheet flow (start → log → sign off → print)',
         steps: [
-          'Open Production → Day Check Sheet (Print).',
-          'Review the sheet; out-of-spec cells are red.',
-          'Select Print — the sheet prints as one landscape page per day, with all three shifts, matching the QC FMT 038 layout.',
+          'Open Production → Day Check Sheet. In step 1 (Sheet details) the operator fills the shift/day header and the machine (die) details.',
+          'In step 2 (Hourly readings) readings are logged one slot at a time through all three shifts; machines can be added or stopped as they start/fault.',
+          'In step 3 (Sign-off & print) each shift’s operator and supervisor sign, then the In-Charge signs off — which locks the sheet.',
+          'Once signed off, select Print — the sheet prints as one landscape page for the day, all three shifts, matching QC FMT 038. Printing is disabled until sign-off. A signed-off sheet can be Reopened for corrections.',
         ],
       },
     ],

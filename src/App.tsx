@@ -14,7 +14,6 @@ import { Config } from './pages/Config'
 import { Dashboard } from './pages/Dashboard'
 import { DayCheckSheet } from './pages/DayCheckSheet'
 import { Documents } from './pages/Documents'
-import { HourlyReadingForm } from './pages/HourlyReadingForm'
 import { KnowledgeBase } from './pages/KnowledgeBase'
 import { Ledgers } from './pages/Ledgers'
 import { Login } from './pages/Login'
@@ -51,14 +50,6 @@ function AuthGate() {
             element={
               <RequirePermission permission="checksheets:view">
                 <DayCheckSheet />
-              </RequirePermission>
-            }
-          />
-          <Route
-            path="hourly-reading"
-            element={
-              <RequirePermission permission="checksheets:create">
-                <HourlyReadingForm />
               </RequirePermission>
             }
           />
