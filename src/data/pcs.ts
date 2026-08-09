@@ -85,9 +85,20 @@ export function slotIndex(shift: string, slot: string): number {
   return FLAT_SLOTS.findIndex((f) => f.shift === shift && f.slot === slot)
 }
 
-/** A machine is active at a slot from the slot it was added onward. */
-export function machineActiveAt(m: { activeFromShift: string; activeFromSlot: string }, shift: string, slot: string): boolean {
-  return slotIndex(shift, slot) >= slotIndex(m.activeFromShift, m.activeFromSlot)
+/**
+ * A machine is active at a slot within its window: from the slot it was added
+ * up to (but not including) the slot it was stopped on. Slots before it started
+ * or from its stop slot onward are N/A.
+ */
+export function machineActiveAt(
+  m: { activeFromShift: string; activeFromSlot: string; stoppedFromShift?: string; stoppedFromSlot?: string },
+  shift: string,
+  slot: string,
+): boolean {
+  const i = slotIndex(shift, slot)
+  if (i < slotIndex(m.activeFromShift, m.activeFromSlot)) return false
+  if (m.stoppedFromShift && m.stoppedFromSlot && i >= slotIndex(m.stoppedFromShift, m.stoppedFromSlot)) return false
+  return true
 }
 
 // --- Demo day sheet (mirrors the scanned form) ------------------------------
@@ -112,12 +123,14 @@ const JITTER: Record<string, number> = {
 const HOLD_TAGS = ['1W', '2W', '3W', '1B', '2B']
 
 /**
- * Demo machines. M/C 06 and 04 start at shift-open (06:30); M/C 12 is added
- * mid-morning at 10:00 — so slots 06:30–09:30 print N/A for it.
+ * Demo machines showing the full lifecycle:
+ *  - M/C 06 runs all day from shift-open (06:30).
+ *  - M/C 04 starts at 06:30 but is stopped at 13:00 (fault) — 13:00 onward N/A.
+ *  - M/C 12 is added mid-morning at 10:00 — 06:30–09:30 print N/A for it.
  */
 export const DEMO_MACHINES: PcsMachineSetup[] = [
   { machineCode: '06', bcNo: '674', dieCoatThickness: 130, diePreheatTemp: 249, coolingTime: 180, pouringTime: 9, tiltingTime: 14, degasKillingTime: 16, activeFromShift: 'I', activeFromSlot: '06:30' },
-  { machineCode: '04', bcNo: '712', dieCoatThickness: 130, diePreheatTemp: 249, coolingTime: 180, pouringTime: 9, tiltingTime: 14, degasKillingTime: 16, activeFromShift: 'I', activeFromSlot: '06:30' },
+  { machineCode: '04', bcNo: '712', dieCoatThickness: 130, diePreheatTemp: 249, coolingTime: 180, pouringTime: 9, tiltingTime: 14, degasKillingTime: 16, activeFromShift: 'I', activeFromSlot: '06:30', stoppedFromShift: 'I', stoppedFromSlot: '13:00' },
   { machineCode: '12', bcNo: '674', dieCoatThickness: 132, diePreheatTemp: 247, coolingTime: 180, pouringTime: 9, tiltingTime: 15, degasKillingTime: 16, activeFromShift: 'I', activeFromSlot: '10:00' },
 ]
 

@@ -230,6 +230,18 @@ export const UAT_SUITES: UatFeature[] = [
         steps: ['On Hourly Readings, select “Day sheet & print”.', 'Choose Print.'],
         expected: 'A day-sheet preview appears in place and prints as the QC FMT 038 landscape sheet.',
       },
+      {
+        id: 'UAT-PCS-11',
+        requirement: 'REQ-PCS-13',
+        title: 'Stop a machine mid-day; remaining slots are N/A',
+        steps: [
+          'In Hourly Readings, select a slot (e.g. 13:00) and under Machines press “Stop from 13:00” for a running machine.',
+          'Select an earlier slot (e.g. 12:30) and a later slot (e.g. 13:30) and check the machine list for entry.',
+          'Open the day sheet / print.',
+        ],
+        expected:
+          'The machine is not asked for from 13:00 onward (still present at 12:30). The print shows its readings up to 12:30 and N/A from 13:00 to end of day. Reactivate restores it.',
+      },
     ],
   },
   {
