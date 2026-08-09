@@ -21,19 +21,19 @@ export const TEST_ALERT_RECIPIENTS = ['neurolooom@gmail.com']
 
 export const PCS_PARAMETERS: PcsParameter[] = [
   { code: 'HOLD_CHARGES', name: 'Holding furnace / No. of Charges', label: 'Holding furnace / No. of Charges', category: 'Furnace', cadence: 'Slot', appliesTo: 'Global', dataType: 'Text', sortOrder: 5 },
-  { code: 'INGOT', name: 'Ingot 50% / Foundry returns 50%', label: 'Ingot 50%(Kgs) Foundry returns 50% Total = 300 Kgs/Charge', category: 'Charge', cadence: 'Slot', appliesTo: 'Global', dataType: 'Number', unit: 'Kgs', min: 145, max: 155, sortOrder: 10 },
+  { code: 'INGOT', name: 'Ingot 50% / Foundry returns 50%', label: 'Ingot 50%(Kgs) Foundry returns 50% Total = 300 Kgs per Charge', category: 'Charge', cadence: 'Slot', appliesTo: 'Global', dataType: 'Number', unit: 'Kgs', min: 145, max: 155, sortOrder: 10 },
   { code: 'DROSS', name: 'Dross Cleaning', label: 'Dross Cleaning in Holding furnace (20 mins once)', category: 'Furnace', cadence: 'Slot', appliesTo: 'Global', dataType: 'Number', unit: 'min', min: 18, max: 22, sortOrder: 20 },
-  { code: 'MELT_TEMP', name: 'Melting Metal Temp', label: 'Melting Metal Temp. 720°C ~ 740°C', category: 'Melting', cadence: 'Slot', appliesTo: 'Global', dataType: 'Number', unit: '°C', min: 720, max: 740, sortOrder: 30 },
-  { code: 'COVERALL', name: 'Coverall', label: 'Coverall 200 ~ 300 grams per charge', category: 'Charge', cadence: 'Slot', appliesTo: 'Global', dataType: 'Number', unit: 'g', min: 200, max: 300, sortOrder: 40 },
-  { code: 'DEGAS', name: 'Degassing', label: 'Degasing 15 mins / charge', category: 'Degassing', cadence: 'Slot', appliesTo: 'Global', dataType: 'Number', unit: 'min', min: 10, max: 15, sortOrder: 50 },
+  { code: 'MELT_TEMP', name: 'Melting Metal Temp', label: 'Melting  Metal Temp.  720°C ~ 740°C', category: 'Melting', cadence: 'Slot', appliesTo: 'Global', dataType: 'Number', unit: '°C', min: 720, max: 740, sortOrder: 30 },
+  { code: 'COVERALL', name: 'Coverall', label: 'Coverall  200 ~ 300 grams per charge', category: 'Charge', cadence: 'Slot', appliesTo: 'Global', dataType: 'Number', unit: 'g', min: 200, max: 300, sortOrder: 40 },
+  { code: 'DEGAS', name: 'Degassing', label: 'Degasing  15 mins/ charge', category: 'Degassing', cadence: 'Slot', appliesTo: 'Global', dataType: 'Number', unit: 'min', min: 10, max: 15, sortOrder: 50 },
   { code: 'PRESSURE', name: 'Pressure', label: 'Pressure 2 - 3 bar', category: 'Degassing', cadence: 'Slot', appliesTo: 'Global', dataType: 'Number', unit: 'bar', min: 2, max: 3, sortOrder: 60 },
   { code: 'FLOW', name: 'Flow rate', label: 'Flow rate 6 ~ 9 Lpm', category: 'Degassing', cadence: 'Slot', appliesTo: 'Global', dataType: 'Number', unit: 'LPM', min: 6, max: 9, sortOrder: 70 },
-  { code: 'ROTOR', name: 'Rotor RPM', label: 'Rotor RPM - Min 550 (100mm) / Min 350 (190mm)', category: 'Degassing', cadence: 'Slot', appliesTo: 'Global', dataType: 'Number', unit: 'RPM', min: 550, sortOrder: 80 },
-  { code: 'GAS_CHECK', name: 'Gas Checking', label: 'Gas Checking - K-Mould / vaccum sample', category: 'Quality', cadence: 'Slot', appliesTo: 'Global', dataType: 'Decimal', min: 0, max: 0.1, sortOrder: 90 },
-  { code: 'ROOM_TEMP', name: 'Room Temp', label: 'Room Temp °C', category: 'Ambient', cadence: 'Slot', appliesTo: 'Global', dataType: 'Decimal', unit: '°C', sortOrder: 100 },
-  { code: 'HUMIDITY', name: 'Humidity', label: 'Humidity %', category: 'Ambient', cadence: 'Slot', appliesTo: 'Global', dataType: 'Decimal', unit: '%', sortOrder: 110 },
-  { code: 'POUR_TEMP', name: 'Metal Temp. When pouring', label: 'Metal Temp. When pouring 730°C ~ 750°C', category: 'Pouring', cadence: 'Slot', appliesTo: 'Global', dataType: 'Number', unit: '°C', min: 730, max: 750, sortOrder: 120 },
-  { code: 'DIE_TEMP', name: 'Die Temp', label: 'Die Temp. 250°C - 350°C', category: 'Die', cadence: 'Slot', appliesTo: 'Machine', dataType: 'Number', unit: '°C', min: 250, max: 350, sortOrder: 130 },
+  { code: 'ROTOR', name: 'Rotor RPM', label: 'Rotor RPM -  (550 RPM ~ 650 Rpm - 100mm rotor)  (350 - 400Rpm - 190mm rotor)', category: 'Degassing', cadence: 'Slot', appliesTo: 'Global', dataType: 'Number', unit: 'RPM', min: 550, sortOrder: 80 },
+  { code: 'GAS_CHECK', name: 'Gas Checking', label: 'Gas Checking -  K-Mould / vaccum sample', category: 'Quality', cadence: 'Slot', appliesTo: 'Global', dataType: 'Decimal', min: 0, max: 0.1, sortOrder: 90 },
+  { code: 'ROOM_TEMP', name: 'Room Temp', label: 'Room Temp°C', category: 'Ambient', cadence: 'Slot', appliesTo: 'Global', dataType: 'Decimal', unit: '°C', sortOrder: 100 },
+  { code: 'HUMIDITY', name: 'Humidity', label: 'Humidity  %', category: 'Ambient', cadence: 'Slot', appliesTo: 'Global', dataType: 'Decimal', unit: '%', sortOrder: 110 },
+  { code: 'POUR_TEMP', name: 'Holding Furnace Metal Temperature', label: 'Holding Furnace Metal Temperature 730°C ~ 750°C', category: 'Pouring', cadence: 'Slot', appliesTo: 'Global', dataType: 'Number', unit: '°C', min: 730, max: 750, sortOrder: 120 },
+  { code: 'DIE_TEMP', name: 'Die Temp', label: 'Die Temp. 250°C ~ 350°C', category: 'Die', cadence: 'Slot', appliesTo: 'Machine', dataType: 'Number', unit: '°C', min: 250, max: 350, sortOrder: 130 },
 ]
 
 /** Line-level per-slot rows, in print order. */
@@ -56,23 +56,25 @@ export function isOutOfSpec(code: string, value: string | number): boolean {
 
 // --- Shifts & slots ---------------------------------------------------------
 
-function genSlots(start: string, count: number, stepMin = 30): string[] {
-  const [h, m] = start.split(':').map(Number)
-  let t = h * 60 + m
-  const out: string[] = []
-  for (let i = 0; i < count; i++) {
-    const hh = Math.floor((t % 1440) / 60)
-    const mm = t % 60
-    out.push(`${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`)
-    t += stepMin
-  }
-  return out
-}
-
+// Slot column headers taken verbatim from the master template (QC FMT 038):
+// 1st shift 16 cols, 2nd shift 15 cols, 3rd shift 16 cols (the template's 3rd
+// shift skips 12.00am, going 11.30pm -> 12.30am).
 export const PCS_SHIFTS: PcsShift[] = [
-  { code: 'I', name: '1st Shift', slots: genSlots('06:30', 16) },
-  { code: 'II', name: '2nd Shift', slots: genSlots('14:30', 16) },
-  { code: 'III', name: '3rd Shift', slots: genSlots('22:30', 16) },
+  {
+    code: 'I',
+    name: '1ST SHIFT',
+    slots: ['6.30am', '7.00am', '7.30am', '8.00am', '8.30am', '9.00am', '9.30am', '10.00am', '10.30am', '11.00am', '11.30am', '12.00 pm', '12.30pm', '1.00pm', '1.30pm', '2.00pm'],
+  },
+  {
+    code: 'II',
+    name: '2ND SHIFT',
+    slots: ['2.30pm', '3.00pm', '3.30pm', '4.00pm', '4.30pm', '5.00pm', '5.30pm', '6.00pm', '6.30pm', '7.00pm', '7.30pm', '8.00pm', '8.30pm', '9.00pm', '9.30pm'],
+  },
+  {
+    code: 'III',
+    name: '3RD SHIFT',
+    slots: ['10.00pm', '10.30pm', '11.00pm', '11.30pm', '12.30am', '1.00am', '1.30am', '2.00am', '2.30am', '3.00am', '3.30am', '4.00am', '4.30am', '5.00am', '5.30am', '6.00am'],
+  },
 ]
 
 /** Machine codes available to add to a day sheet (from the Machines master). */
@@ -129,9 +131,9 @@ const HOLD_TAGS = ['1W', '2W', '3W', '1B', '2B']
  *  - M/C 12 is added mid-morning at 10:00 — 06:30–09:30 print N/A for it.
  */
 export const DEMO_MACHINES: PcsMachineSetup[] = [
-  { machineCode: '06', bcNo: '674', dieCoatThickness: 130, diePreheatTemp: 249, coolingTime: 180, pouringTime: 9, tiltingTime: 14, degasKillingTime: 16, activeFromShift: 'I', activeFromSlot: '06:30' },
-  { machineCode: '04', bcNo: '712', dieCoatThickness: 130, diePreheatTemp: 249, coolingTime: 180, pouringTime: 9, tiltingTime: 14, degasKillingTime: 16, activeFromShift: 'I', activeFromSlot: '06:30', stoppedFromShift: 'I', stoppedFromSlot: '13:00' },
-  { machineCode: '12', bcNo: '674', dieCoatThickness: 132, diePreheatTemp: 247, coolingTime: 180, pouringTime: 9, tiltingTime: 15, degasKillingTime: 16, activeFromShift: 'I', activeFromSlot: '10:00' },
+  { machineCode: '06', bcNo: '674', dieCoatThickness: 130, diePreheatTemp: 249, coolingTime: 180, pouringTime: 9, tiltingTime: 14, degasKillingTime: 15, activeFromShift: 'I', activeFromSlot: '6.30am' },
+  { machineCode: '04', bcNo: '712', dieCoatThickness: 130, diePreheatTemp: 249, coolingTime: 180, pouringTime: 9, tiltingTime: 14, degasKillingTime: 15, activeFromShift: 'I', activeFromSlot: '6.30am', stoppedFromShift: 'I', stoppedFromSlot: '1.00pm' },
+  { machineCode: '12', bcNo: '674', dieCoatThickness: 132, diePreheatTemp: 247, coolingTime: 180, pouringTime: 9, tiltingTime: 15, degasKillingTime: 15, activeFromShift: 'I', activeFromSlot: '10.00am' },
 ]
 
 /** Build one hourly child record (PcsSlotEntry) per shift × slot. */

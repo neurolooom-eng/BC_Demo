@@ -220,11 +220,13 @@ export const REQUIREMENTS: RequirementFeature[] = [
       },
       {
         id: 'REQ-PCS-06',
-        title: 'Day printout (all shifts, one sheet)',
+        title: 'Day printout (all shifts, one sheet) — enforces the master template',
         priority: 'Must',
-        description: 'The day sheet prints as a single landscape page per date reproducing QC FMT 038 Rev 10, covering all three shifts.',
+        description: 'The day sheet prints as a single landscape page per date that enforces the master template QC FMT 038 Rev 10, covering all three shifts.',
         acceptanceCriteria: [
-          'The printout shows the header, 30-minute grid for all shifts, machine sub-grid, core-pin block, startup and signatures.',
+          'Row labels, section order and headings match the master template verbatim (e.g. "Holding Furnace Metal Temperature 730°C ~ 750°C", the full Rotor RPM text).',
+          'The time columns match the template exactly: 1st shift 16, 2nd shift 15, 3rd shift 16 slots (47 total), with the template’s slot labels.',
+          'The printout shows the header, the grid for all shifts, the machine sub-grid, the per-shift core-pin OK/NOT-OK block, error-proofs, die-prep startup, operator instructions and signatures.',
           'Out-of-spec cells print red.',
         ],
       },
