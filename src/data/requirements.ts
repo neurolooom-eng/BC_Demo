@@ -163,6 +163,84 @@ export const REQUIREMENTS: RequirementFeature[] = [
     ],
   },
   {
+    id: 'pcs',
+    feature: 'Process Check Sheet (QC FMT 038)',
+    overview:
+      'Daily process check sheet for a line: a day header, 30-minute time-slot readings across all three shifts, per-machine setup and Die-Temp readings, per-shift core-pin verification and sign-off, and once-a-day startup checks. Spec limits live in the Parameters master and drive out-of-spec highlighting and email alerts. The day prints as one sheet covering all shifts, matching the paper form.',
+    requirements: [
+      {
+        id: 'REQ-PCS-01',
+        title: 'Day sheet structure',
+        priority: 'Must',
+        description: 'One day sheet per Line per Date captures data at five cadences: Day header, Time-slot, Machine, Shift and Startup.',
+        acceptanceCriteria: [
+          'A day sheet holds the day header, machines, slot readings, per-shift core-pin and sign-off, and startup checks.',
+          'Each field is captured at its defined cadence.',
+        ],
+      },
+      {
+        id: 'REQ-PCS-02',
+        title: 'Half-hourly capture across three shifts',
+        priority: 'Must',
+        description: 'Time-slot readings are captured every 30 minutes across 1st, 2nd and 3rd shift.',
+        acceptanceCriteria: [
+          'Each shift exposes 30-minute slot columns.',
+          'Line-level readings are captured per slot; Die Temp is captured per machine per slot.',
+        ],
+      },
+      {
+        id: 'REQ-PCS-03',
+        title: 'Spec limits in the Parameters master',
+        priority: 'Must',
+        description: 'Every measurable parameter has min/max spec limits held in the Parameters master (Google Sheet tab).',
+        acceptanceCriteria: [
+          'Each parameter carries unit, min, max, cadence and appliesTo.',
+          'Limits are editable without code changes.',
+        ],
+      },
+      {
+        id: 'REQ-PCS-04',
+        title: 'Out-of-spec highlighting',
+        priority: 'Must',
+        description: 'Readings outside their spec range are highlighted red on screen and on the printout.',
+        acceptanceCriteria: [
+          'A value below min or above max renders red.',
+          'A value within range renders normally.',
+        ],
+      },
+      {
+        id: 'REQ-PCS-05',
+        title: 'Out-of-spec email alerts',
+        priority: 'Should',
+        description: 'An out-of-spec reading triggers an email to the configured recipients and is logged.',
+        acceptanceCriteria: [
+          'The backend exposes an alert action that emails active AlertRecipients filtered by scope and severity.',
+          'Each alert is logged to the Alerts tab with value, limits and recipients.',
+        ],
+      },
+      {
+        id: 'REQ-PCS-06',
+        title: 'Day printout (all shifts, one sheet)',
+        priority: 'Must',
+        description: 'The day sheet prints as a single landscape page per date reproducing QC FMT 038 Rev 10, covering all three shifts.',
+        acceptanceCriteria: [
+          'The printout shows the header, 30-minute grid for all shifts, machine sub-grid, core-pin block, startup and signatures.',
+          'Out-of-spec cells print red.',
+        ],
+      },
+      {
+        id: 'REQ-PCS-07',
+        title: 'Client-managed masters',
+        priority: 'Should',
+        description: 'Reference data and spec limits are held in Google Sheet master tabs so the client has full control.',
+        acceptanceCriteria: [
+          'Master tabs exist for lines, machines, furnaces, shifts, grades, alloys, gases, coatings, employees, parameters, alert recipients and field definitions (see docs/MASTERS.md).',
+          'Every tab has an id column and documented headers.',
+        ],
+      },
+    ],
+  },
+  {
     id: 'navigation',
     feature: 'Configurable Navigation',
     overview:
