@@ -1,26 +1,37 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react'
 import { DEMO_DAY_SHEET } from '../data/pcs'
-import type { DaySheet, PcsMachineSetup, PcsSlotEntry } from '../types/pcs'
+import type { DaySheet, PcsMachineSetup, PcsShiftSignoff, PcsSlotEntry } from '../types/pcs'
 
 /**
- * Holds the working day sheet for the demo. Hourly readings are child records
- * (PcsSlotEntry) added from the standalone Hourly Reading form and assembled
- * into the day print. Machines can be added mid-day with an "active from" slot,
- * so earlier slots print N/A for them. Both persist per browser.
+ * The working Process Check Sheet for the day and its lifecycle:
+ *   Draft  → operator fills MC + shift details, logs hourly readings
+ *   Signed off → in-charge signs off once all shifts are done; only then can it print.
+ * Everything persists per browser so the sheet survives reloads across shifts.
  */
 
-const KEY = 'bestcast.pcs.slotEntries.v1'
-const MC_KEY = 'bestcast.pcs.machines.v1'
+const SHEET_KEY = 'bestcast.pcs.sheet.v1'
+const SIGN_KEY = 'bestcast.pcs.signedoff.v1'
+
+type HeaderPatch = Partial<
+  Pick<DaySheet, 'line' | 'date' | 'metalGrade' | 'degassingGas' | 'furnaceNos' | 'bestCastAlloy' | 'otherAlloy' | 'inChargeSign'>
+>
 
 interface PcsDayValue {
   sheet: DaySheet
+  signedOff: boolean
+  updateHeader: (patch: HeaderPatch) => void
+  addMachine: (machine: PcsMachineSetup) => void
+  updateMachine: (machineCode: string, patch: Partial<PcsMachineSetup>) => void
+  stopMachine: (machineCode: string, shift: string, slot: string) => void
+  reactivateMachine: (machineCode: string) => void
   addSlotEntry: (entry: PcsSlotEntry) => void
   removeSlotEntry: (id: string) => void
-  addMachine: (machine: PcsMachineSetup) => void
-  /** Stop a machine from the given slot (fault/shutdown) — that slot onward is N/A. */
-  stopMachine: (machineCode: string, shift: string, slot: string) => void
-  /** Clear a machine's stop, so it is active again through the rest of the day. */
-  reactivateMachine: (machineCode: string) => void
+  updateSignoff: (shiftCode: string, patch: Partial<PcsShiftSignoff>) => void
+  updateStartup: (patch: Partial<DaySheet['startup']>) => void
+  /** In-charge sign-off; locks the sheet and enables printing. */
+  signOff: () => void
+  /** Reopen a signed-off sheet for corrections. */
+  reopen: () => void
   resetToDemo: () => void
 }
 
@@ -38,74 +49,101 @@ function readStored<T>(key: string, fallback: T): T {
 }
 
 export function PcsDayProvider({ children }: { children: ReactNode }) {
-  const [entries, setEntries] = useState<PcsSlotEntry[]>(() => readStored(KEY, DEMO_DAY_SHEET.slotEntries))
-  const [machines, setMachines] = useState<PcsMachineSetup[]>(() => readStored(MC_KEY, DEMO_DAY_SHEET.machines))
+  const [sheet, setSheet] = useState<DaySheet>(() => readStored(SHEET_KEY, DEMO_DAY_SHEET))
+  const [signedOff, setSignedOff] = useState<boolean>(() => readStored(SIGN_KEY, false))
 
-  const addSlotEntry = useCallback((entry: PcsSlotEntry) => {
-    setEntries((prev) => {
-      const next = [...prev.filter((e) => !(e.shiftCode === entry.shiftCode && e.slot === entry.slot)), entry].sort(
-        (a, b) => a.shiftCode.localeCompare(b.shiftCode) || a.slot.localeCompare(b.slot),
-      )
-      window.localStorage.setItem(KEY, JSON.stringify(next))
+  const patch = useCallback((mutate: (s: DaySheet) => DaySheet) => {
+    setSheet((prev) => {
+      const next = mutate(prev)
+      window.localStorage.setItem(SHEET_KEY, JSON.stringify(next))
       return next
     })
   }, [])
 
-  const removeSlotEntry = useCallback((id: string) => {
-    setEntries((prev) => {
-      const next = prev.filter((e) => e.id !== id)
-      window.localStorage.setItem(KEY, JSON.stringify(next))
-      return next
-    })
+  const setSigned = useCallback((v: boolean) => {
+    setSignedOff(v)
+    window.localStorage.setItem(SIGN_KEY, JSON.stringify(v))
   }, [])
 
-  const addMachine = useCallback((machine: PcsMachineSetup) => {
-    setMachines((prev) => {
-      if (prev.some((m) => m.machineCode === machine.machineCode)) return prev
-      const next = [...prev, machine]
-      window.localStorage.setItem(MC_KEY, JSON.stringify(next))
-      return next
-    })
-  }, [])
+  const updateHeader = useCallback((p: HeaderPatch) => patch((s) => ({ ...s, ...p })), [patch])
 
-  const stopMachine = useCallback((machineCode: string, shift: string, slot: string) => {
-    setMachines((prev) => {
-      const next = prev.map((m) =>
-        m.machineCode === machineCode ? { ...m, stoppedFromShift: shift, stoppedFromSlot: slot } : m,
-      )
-      window.localStorage.setItem(MC_KEY, JSON.stringify(next))
-      return next
-    })
-  }, [])
+  const addMachine = useCallback(
+    (machine: PcsMachineSetup) =>
+      patch((s) => (s.machines.some((m) => m.machineCode === machine.machineCode) ? s : { ...s, machines: [...s.machines, machine] })),
+    [patch],
+  )
 
-  const reactivateMachine = useCallback((machineCode: string) => {
-    setMachines((prev) => {
-      const next = prev.map((m) =>
-        m.machineCode === machineCode ? { ...m, stoppedFromShift: undefined, stoppedFromSlot: undefined } : m,
-      )
-      window.localStorage.setItem(MC_KEY, JSON.stringify(next))
-      return next
-    })
-  }, [])
+  const updateMachine = useCallback(
+    (code: string, p: Partial<PcsMachineSetup>) =>
+      patch((s) => ({ ...s, machines: s.machines.map((m) => (m.machineCode === code ? { ...m, ...p } : m)) })),
+    [patch],
+  )
+
+  const stopMachine = useCallback(
+    (code: string, shift: string, slot: string) =>
+      patch((s) => ({
+        ...s,
+        machines: s.machines.map((m) => (m.machineCode === code ? { ...m, stoppedFromShift: shift, stoppedFromSlot: slot } : m)),
+      })),
+    [patch],
+  )
+
+  const reactivateMachine = useCallback(
+    (code: string) =>
+      patch((s) => ({
+        ...s,
+        machines: s.machines.map((m) => (m.machineCode === code ? { ...m, stoppedFromShift: undefined, stoppedFromSlot: undefined } : m)),
+      })),
+    [patch],
+  )
+
+  const addSlotEntry = useCallback(
+    (entry: PcsSlotEntry) =>
+      patch((s) => ({
+        ...s,
+        slotEntries: [...s.slotEntries.filter((e) => !(e.shiftCode === entry.shiftCode && e.slot === entry.slot)), entry].sort(
+          (a, b) => a.shiftCode.localeCompare(b.shiftCode) || a.slot.localeCompare(b.slot),
+        ),
+      })),
+    [patch],
+  )
+
+  const removeSlotEntry = useCallback((id: string) => patch((s) => ({ ...s, slotEntries: s.slotEntries.filter((e) => e.id !== id) })), [patch])
+
+  const updateSignoff = useCallback(
+    (shiftCode: string, p: Partial<PcsShiftSignoff>) =>
+      patch((s) => ({ ...s, signoffs: s.signoffs.map((so) => (so.shiftCode === shiftCode ? { ...so, ...p } : so)) })),
+    [patch],
+  )
+
+  const updateStartup = useCallback((p: Partial<DaySheet['startup']>) => patch((s) => ({ ...s, startup: { ...s.startup, ...p } })), [patch])
+
+  const signOff = useCallback(() => setSigned(true), [setSigned])
+  const reopen = useCallback(() => setSigned(false), [setSigned])
 
   const resetToDemo = useCallback(() => {
-    setEntries(DEMO_DAY_SHEET.slotEntries)
-    setMachines(DEMO_DAY_SHEET.machines)
-    window.localStorage.setItem(KEY, JSON.stringify(DEMO_DAY_SHEET.slotEntries))
-    window.localStorage.setItem(MC_KEY, JSON.stringify(DEMO_DAY_SHEET.machines))
-  }, [])
+    patch(() => DEMO_DAY_SHEET)
+    setSigned(false)
+  }, [patch, setSigned])
 
   const value = useMemo<PcsDayValue>(
     () => ({
-      sheet: { ...DEMO_DAY_SHEET, machines, slotEntries: entries },
-      addSlotEntry,
-      removeSlotEntry,
+      sheet,
+      signedOff,
+      updateHeader,
       addMachine,
+      updateMachine,
       stopMachine,
       reactivateMachine,
+      addSlotEntry,
+      removeSlotEntry,
+      updateSignoff,
+      updateStartup,
+      signOff,
+      reopen,
       resetToDemo,
     }),
-    [entries, machines, addSlotEntry, removeSlotEntry, addMachine, stopMachine, reactivateMachine, resetToDemo],
+    [sheet, signedOff, updateHeader, addMachine, updateMachine, stopMachine, reactivateMachine, addSlotEntry, removeSlotEntry, updateSignoff, updateStartup, signOff, reopen, resetToDemo],
   )
 
   return <PcsDayContext.Provider value={value}>{children}</PcsDayContext.Provider>
