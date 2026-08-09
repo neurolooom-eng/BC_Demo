@@ -7,6 +7,16 @@
 
 import type { DaySheet, PcsParameter, PcsReading, PcsShift } from '../types/pcs'
 
+/** Maximum machines captured on a single day sheet. */
+export const MAX_MACHINES_PER_DAY = 10
+
+/**
+ * Test recipient for out-of-spec email alerts until the User Master is ready
+ * (see BACKLOG.md). Once users exist, alert recipients come from the
+ * AlertRecipients master keyed off the User Master.
+ */
+export const TEST_ALERT_RECIPIENTS = ['neurolooom@gmail.com']
+
 // --- Parameters master (per-slot line readings + machine Die Temp) ----------
 
 export const PCS_PARAMETERS: PcsParameter[] = [

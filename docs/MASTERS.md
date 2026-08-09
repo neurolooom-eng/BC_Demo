@@ -32,7 +32,7 @@ alert routing, and even the form's own fields — with no developer involvement.
 | `code` | text | 06 | M/C No |
 | `lineId` | ref→Lines | LINE-01 | |
 | `description` | text | | optional |
-| `active` | bool | TRUE | |
+| `active` | bool | TRUE | up to **10 machines** per day sheet |
 
 ### 3. `Furnaces`
 | Column | Type | Example | Notes |
@@ -122,7 +122,7 @@ Who is emailed when a reading breaches spec.
 |---|---|---|---|
 | `id` | text | AR-QA | |
 | `name` | text | QA Admin | |
-| `email` | email | qa@bestcastgroup.com | |
+| `email` | email | neurolooom@gmail.com | test recipient until User Master is ready |
 | `scope` | enum(All,Line) | All | |
 | `lineId` | ref→Lines | | required when scope=Line |
 | `minSeverity` | enum(Warning,Critical) | Warning | only alert at/above this |

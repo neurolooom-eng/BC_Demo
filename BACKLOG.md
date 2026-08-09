@@ -17,7 +17,16 @@ Developer-facing backlog of follow-ups and open questions. Newest first.
   Update it in `src/data/users.ts` (and the live `Users` tab) or via
   Admin → Users when the real address is known.
 
+- **Finalize out-of-spec alert recipients from the User Master.** Recipients
+  should be derived from the User Master (e.g. QA/admin users) once it is ready.
+  Until then, alerts fall back to a test recipient (`neurolooom@gmail.com`) in
+  both the app (`TEST_ALERT_RECIPIENTS` in `src/data/pcs.ts`) and the Apps
+  Script backend (`TEST_ALERT_RECIPIENT` in `Code.gs`). Replace the fallback
+  with User-Master-driven `AlertRecipients` when available. _(Raised 2026-08-09.)_
+
 ## Done
+
+- Max machines per day sheet fixed at **10** (`MAX_MACHINES_PER_DAY`). _(2026-08-09)_
 
 - Hide Supply Chain & Finance from navigation by default, developer-configurable
   from the Developer Config page. _(2026-08-08)_

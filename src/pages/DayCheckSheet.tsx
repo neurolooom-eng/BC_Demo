@@ -2,7 +2,7 @@ import { AlertTriangle, ClipboardList, Printer } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { ProcessCheckSheetPrint } from '../components/pcs/ProcessCheckSheetPrint'
-import { DEMO_DAY_SHEET, isOutOfSpec, paramByCode } from '../data/pcs'
+import { DEMO_DAY_SHEET, isOutOfSpec, MAX_MACHINES_PER_DAY, paramByCode, TEST_ALERT_RECIPIENTS } from '../data/pcs'
 
 export function DayCheckSheet() {
   const sheet = DEMO_DAY_SHEET
@@ -18,7 +18,7 @@ export function DayCheckSheet() {
           <div>
             <h1 className="text-xl font-bold text-text">Process Check Sheet — Day Print</h1>
             <p className="text-sm text-muted">
-              QC FMT 038 Rev 10 · one sheet per day, all three shifts · {sheet.date} · {sheet.line}
+              QC FMT 038 Rev 10 · one sheet per day, all three shifts · up to {MAX_MACHINES_PER_DAY} machines · {sheet.date} · {sheet.line}
             </p>
           </div>
         </div>
@@ -32,7 +32,8 @@ export function DayCheckSheet() {
           <AlertTriangle className="h-4 w-4 shrink-0" />
           <span>
             <b>{breaches.length}</b> out-of-spec reading{breaches.length === 1 ? '' : 's'} on this sheet (shown in red). In
-            a live setup these also trigger an email alert to the configured recipients.
+            a live setup these trigger an email alert (test recipient: <b>{TEST_ALERT_RECIPIENTS.join(', ')}</b> until the
+            User Master is ready).
           </span>
         </Card>
       )}
