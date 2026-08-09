@@ -50,6 +50,29 @@
   .chip {
     @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium;
   }
+
+  /*
+   * Out-of-spec highlight. Light themes: solid red background, white text.
+   * Dark themes: the contrary — light cell, red text — so it still pops.
+   * When printing (always white paper), force the red-fill/white-text form.
+   */
+  .oos {
+    background-color: rgb(var(--c-danger));
+    color: #ffffff;
+  }
+  [data-mode='dark'] .oos {
+    background-color: #ffffff;
+    color: rgb(var(--c-danger));
+  }
+}
+
+@media print {
+  .oos {
+    background-color: rgb(var(--c-danger)) !important;
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
 
 /* Printing a document (e.g. Purchase Order print preview): hide everything

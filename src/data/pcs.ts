@@ -5,7 +5,7 @@
  * this bundled data lets the day print render standalone.
  */
 
-import type { DaySheet, PcsParameter, PcsReading, PcsShift } from '../types/pcs'
+import type { DaySheet, PcsParameter, PcsShift, PcsSlotEntry } from '../types/pcs'
 
 /** Maximum machines captured on a single day sheet. */
 export const MAX_MACHINES_PER_DAY = 10
@@ -96,39 +96,59 @@ const JITTER: Record<string, number> = {
 }
 const HOLD_TAGS = ['1W', '2W', '3W', '1B', '2B']
 
-function buildDemoReadings(): PcsReading[] {
+/** Machine codes that have hourly readings on the demo day. */
+export const DEMO_MACHINE_CODES = ['06', '04', '12']
+
+/** Build one hourly child record (PcsSlotEntry) per shift × slot. */
+function buildDemoSlotEntries(): PcsSlotEntry[] {
   const rnd = seeded(42)
-  const readings: PcsReading[] = []
-  const machines = ['06', '04', '12']
+  const entries: PcsSlotEntry[] = []
   let n = 0
   for (const shift of PCS_SHIFTS) {
     for (const slot of shift.slots) {
-      // Line-level readings
+      const line: Record<string, string | number> = {}
       for (const p of SLOT_LINE_PARAMS) {
         n++
-        let value: string | number
         if (p.code === 'HOLD_CHARGES') {
-          value = HOLD_TAGS[n % HOLD_TAGS.length]
-        } else {
-          const base = NOMINAL[p.code] ?? 0
-          const j = JITTER[p.code] ?? 1
-          let v = base + (rnd() - 0.5) * 2 * j
-          // Sprinkle a few deterministic out-of-spec values to show highlighting.
-          if (n % 37 === 0 && p.code === 'MELT_TEMP') v = 745
-          if (n % 41 === 0 && p.code === 'ROTOR') v = 538
-          if (n % 53 === 0 && p.code === 'POUR_TEMP') v = 752
-          value = p.dataType === 'Decimal' ? Math.round(v * 100) / 100 : Math.round(v)
+          line[p.code] = HOLD_TAGS[n % HOLD_TAGS.length]
+          continue
         }
-        readings.push({ parameterCode: p.code, shiftCode: shift.code, slot, value })
+        const base = NOMINAL[p.code] ?? 0
+        const j = JITTER[p.code] ?? 1
+        let v = base + (rnd() - 0.5) * 2 * j
+        // A few deterministic out-of-spec values to show highlighting.
+        if (n % 37 === 0 && p.code === 'MELT_TEMP') v = 745
+        if (n % 41 === 0 && p.code === 'ROTOR') v = 538
+        if (n % 53 === 0 && p.code === 'POUR_TEMP') v = 752
+        line[p.code] = p.dataType === 'Decimal' ? Math.round(v * 100) / 100 : Math.round(v)
       }
-      // Machine-level Die Temp
-      for (const mc of machines) {
+      const machines: Record<string, Record<string, string | number>> = {}
+      for (const mc of DEMO_MACHINE_CODES) {
         const v = NOMINAL.DIE_TEMP + (rnd() - 0.5) * 2 * JITTER.DIE_TEMP
-        readings.push({ parameterCode: 'DIE_TEMP', shiftCode: shift.code, slot, machineCode: mc, value: Math.round(v) })
+        machines[mc] = { DIE_TEMP: Math.round(v) }
       }
+      entries.push({ id: `${shift.code}-${slot}`, shiftCode: shift.code, slot, line, machines })
     }
   }
-  return readings
+  return entries
+}
+
+/** Index slot-entry child records by shift+slot for the print to assemble. */
+export function slotEntryMap(entries: PcsSlotEntry[]): Map<string, PcsSlotEntry> {
+  return new Map(entries.map((e) => [`${e.shiftCode}|${e.slot}`, e]))
+}
+
+/** Read a value from the assembled slot entries (line-level or per-machine). */
+export function readingValue(
+  entries: Map<string, PcsSlotEntry>,
+  shift: string,
+  slot: string,
+  code: string,
+  machineCode?: string,
+): string | number | undefined {
+  const e = entries.get(`${shift}|${slot}`)
+  if (!e) return undefined
+  return machineCode ? e.machines[machineCode]?.[code] : e.line[code]
 }
 
 export const DEMO_DAY_SHEET: DaySheet = {
@@ -146,7 +166,7 @@ export const DEMO_DAY_SHEET: DaySheet = {
     { machineCode: '04', bcNo: '712', dieCoatThickness: 130, diePreheatTemp: 249, coolingTime: 180, pouringTime: 9, tiltingTime: 14, degasKillingTime: 16 },
     { machineCode: '12', bcNo: '674', dieCoatThickness: 132, diePreheatTemp: 247, coolingTime: 180, pouringTime: 9, tiltingTime: 15, degasKillingTime: 16 },
   ],
-  readings: buildDemoReadings(),
+  slotEntries: buildDemoSlotEntries(),
   corePins: [
     { shiftCode: 'I', cavities: Array(10).fill(true), comment: 'Core pin verified' },
     { shiftCode: 'II', cavities: [true, true, true, true, true, true, false, true, true, true], comment: 'Core pin verified' },

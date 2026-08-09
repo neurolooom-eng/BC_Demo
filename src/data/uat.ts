@@ -188,6 +188,31 @@ export const UAT_SUITES: UatFeature[] = [
         steps: ['Change a parameter’s min/max in the Parameters tab.', 'Reload the Day Check Sheet.'],
         expected: 'Highlighting reflects the new limits without any code change.',
       },
+      {
+        id: 'UAT-PCS-06',
+        requirement: 'REQ-PCS-08',
+        title: 'Hourly reading appends to the print, aligned by slot',
+        steps: [
+          'Open Production → Hourly Readings.',
+          'Pick a shift and time slot, enter values (incl. a machine value), and Save.',
+          'Open the Day Check Sheet.',
+        ],
+        expected: 'The saved values appear on the print under the matching shift/time-slot column, both line and machine rows.',
+      },
+      {
+        id: 'UAT-PCS-07',
+        requirement: 'REQ-PCS-08',
+        title: 'Re-entering a slot updates it',
+        steps: ['In Hourly Readings, save a slot, then select the same shift+slot, change a value and Save again.'],
+        expected: 'The captured-slots list does not duplicate the slot; the print shows the updated value.',
+      },
+      {
+        id: 'UAT-PCS-08',
+        requirement: 'REQ-PCS-10',
+        title: 'Out-of-spec highlight adapts to theme',
+        steps: ['View an out-of-spec cell on a light theme.', 'Switch to a dark theme (Settings → Theme).'],
+        expected: 'Light theme shows red background/white text; dark theme shows the inverted highlight; printing uses red background/white text.',
+      },
     ],
   },
   {
