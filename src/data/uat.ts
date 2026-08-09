@@ -154,10 +154,10 @@ export const UAT_SUITES: UatFeature[] = [
       {
         id: 'UAT-PCS-01',
         requirement: 'REQ-PCS-06',
-        title: 'Day print shows all three shifts on one sheet',
+        title: 'Day print enforces the master template (all shifts, 47 columns)',
         preconditions: 'Signed in with check-sheet access.',
-        steps: ['Open Production → Day Check Sheet (Print).', 'Inspect the reading grid header.'],
-        expected: 'One sheet shows 1st, 2nd and 3rd shift side by side with 30-minute slot columns.',
+        steps: ['Open Production → Day Check Sheet (Print).', 'Inspect the reading grid header and row labels against the master template.'],
+        expected: 'One sheet shows 1ST/2ND/3RD SHIFT with 16/15/16 = 47 slot columns and template row labels (e.g. Holding Furnace Metal Temperature 730°C ~ 750°C).',
       },
       {
         id: 'UAT-PCS-02',
