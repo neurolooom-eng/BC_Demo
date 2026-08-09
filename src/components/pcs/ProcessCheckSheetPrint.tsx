@@ -1,40 +1,31 @@
 import { assetUrl } from '../../lib/assetUrl'
-import { DIE_TEMP_PARAM, isOutOfSpec, PCS_SHIFTS, SLOT_LINE_PARAMS } from '../../data/pcs'
-import type { DaySheet, PcsReading } from '../../types/pcs'
+import { DIE_TEMP_PARAM, isOutOfSpec, PCS_SHIFTS, readingValue, SLOT_LINE_PARAMS, slotEntryMap } from '../../data/pcs'
+import type { DaySheet } from '../../types/pcs'
 
 /**
  * Faithful reproduction of QC FMT 038 Rev 10 — one landscape sheet per day,
- * all three shifts side by side in 30-minute columns. Out-of-spec readings
- * render in red. Wrapped in #print-area so the app's print CSS isolates it.
+ * all three shifts side by side in 30-minute columns. The grid is assembled
+ * from the day's hourly reading child records (slotEntries), aligned by slot.
+ * Out-of-spec readings use the theme-aware `.oos` highlight. Wrapped in
+ * #print-area so the app's print CSS isolates it.
  */
 
 const SLOT_W = 15 // px per 30-min column
 const DESC_W = 150 // px for the description column
 
-function keyOf(code: string, shift: string, slot: string, mc?: string) {
-  return `${code}|${shift}|${slot}|${mc ?? ''}`
-}
-
-function readingMap(readings: PcsReading[]) {
-  const m = new Map<string, PcsReading>()
-  for (const r of readings) m.set(keyOf(r.parameterCode, r.shiftCode, r.slot, r.machineCode), r)
-  return m
-}
-
 const cell = 'border border-black/50 text-center align-middle whitespace-nowrap'
 const hcell = `${cell} bg-black/5 font-semibold`
 
 export function ProcessCheckSheetPrint({ sheet }: { sheet: DaySheet }) {
-  const map = readingMap(sheet.readings)
+  const entries = slotEntryMap(sheet.slotEntries)
   const flatSlots = PCS_SHIFTS.flatMap((s) => s.slots.map((slot) => ({ shift: s.code, slot })))
 
   function ValueCell({ code, shift, slot, mc }: { code: string; shift: string; slot: string; mc?: string }) {
-    const r = map.get(keyOf(code, shift, slot, mc))
-    const v = r?.value
+    const v = readingValue(entries, shift, slot, code, mc)
     const bad = v != null && isOutOfSpec(code, v)
     return (
-      <td className={cell} style={{ width: SLOT_W, minWidth: SLOT_W }}>
-        <span className={bad ? 'font-bold text-red-600' : ''}>{v ?? ''}</span>
+      <td className={`${cell}${bad ? ' oos font-bold' : ''}`} style={{ width: SLOT_W, minWidth: SLOT_W }}>
+        {v ?? ''}
       </td>
     )
   }

@@ -1,12 +1,33 @@
-import { AlertTriangle, ClipboardList, Printer } from 'lucide-react'
+import { AlertTriangle, ClipboardList, PencilLine, Printer } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { ProcessCheckSheetPrint } from '../components/pcs/ProcessCheckSheetPrint'
-import { DEMO_DAY_SHEET, isOutOfSpec, MAX_MACHINES_PER_DAY, paramByCode, TEST_ALERT_RECIPIENTS } from '../data/pcs'
+import { usePcsDay } from '../context/PcsDayContext'
+import { isOutOfSpec, MAX_MACHINES_PER_DAY, paramByCode, TEST_ALERT_RECIPIENTS } from '../data/pcs'
+
+interface Breach {
+  code: string
+  shiftCode: string
+  slot: string
+  machineCode?: string
+  value: string | number
+}
 
 export function DayCheckSheet() {
-  const sheet = DEMO_DAY_SHEET
-  const breaches = sheet.readings.filter((r) => isOutOfSpec(r.parameterCode, r.value))
+  const { sheet } = usePcsDay()
+
+  const breaches: Breach[] = []
+  for (const e of sheet.slotEntries) {
+    for (const [code, value] of Object.entries(e.line)) {
+      if (isOutOfSpec(code, value)) breaches.push({ code, shiftCode: e.shiftCode, slot: e.slot, value })
+    }
+    for (const [mc, vals] of Object.entries(e.machines)) {
+      for (const [code, value] of Object.entries(vals)) {
+        if (isOutOfSpec(code, value)) breaches.push({ code, shiftCode: e.shiftCode, slot: e.slot, machineCode: mc, value })
+      }
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -18,20 +39,28 @@ export function DayCheckSheet() {
           <div>
             <h1 className="text-xl font-bold text-text">Process Check Sheet — Day Print</h1>
             <p className="text-sm text-muted">
-              QC FMT 038 Rev 10 · one sheet per day, all three shifts · up to {MAX_MACHINES_PER_DAY} machines · {sheet.date} · {sheet.line}
+              QC FMT 038 Rev 10 · assembled from {sheet.slotEntries.length} hourly reading records · up to{' '}
+              {MAX_MACHINES_PER_DAY} machines · {sheet.date} · {sheet.line}
             </p>
           </div>
         </div>
-        <Button icon={<Printer className="h-4 w-4" />} onClick={() => window.print()}>
-          Print
-        </Button>
+        <div className="flex gap-2">
+          <Link to="/hourly-reading">
+            <Button variant="outline" icon={<PencilLine className="h-4 w-4" />}>
+              Hourly readings
+            </Button>
+          </Link>
+          <Button icon={<Printer className="h-4 w-4" />} onClick={() => window.print()}>
+            Print
+          </Button>
+        </div>
       </div>
 
       {breaches.length > 0 && (
         <Card className="flex items-center gap-2 border-danger/30 bg-danger/5 p-3 text-sm text-danger">
           <AlertTriangle className="h-4 w-4 shrink-0" />
           <span>
-            <b>{breaches.length}</b> out-of-spec reading{breaches.length === 1 ? '' : 's'} on this sheet (shown in red). In
+            <b>{breaches.length}</b> out-of-spec reading{breaches.length === 1 ? '' : 's'} on this sheet (highlighted). In
             a live setup these trigger an email alert (test recipient: <b>{TEST_ALERT_RECIPIENTS.join(', ')}</b> until the
             User Master is ready).
           </span>
@@ -48,13 +77,16 @@ export function DayCheckSheet() {
           <p className="text-sm text-muted">None — all readings within spec.</p>
         ) : (
           <ul className="space-y-1 text-sm text-muted">
-            {breaches.slice(0, 12).map((r, i) => {
-              const p = paramByCode(r.parameterCode)
+            {breaches.slice(0, 12).map((b, i) => {
+              const p = paramByCode(b.code)
               return (
                 <li key={i}>
                   <span className="font-medium text-text">{p?.name}</span>
-                  {r.machineCode ? ` (M/C ${r.machineCode})` : ''} · Shift {r.shiftCode} @ {r.slot} ·{' '}
-                  <span className="font-semibold text-danger">{String(r.value)}{p?.unit ? ` ${p.unit}` : ''}</span>{' '}
+                  {b.machineCode ? ` (M/C ${b.machineCode})` : ''} · Shift {b.shiftCode} @ {b.slot} ·{' '}
+                  <span className="font-semibold text-danger">
+                    {String(b.value)}
+                    {p?.unit ? ` ${p.unit}` : ''}
+                  </span>{' '}
                   <span className="text-muted">
                     (spec {p?.min ?? '—'}–{p?.max ?? '—'})
                   </span>

@@ -4,6 +4,7 @@ import { AppLayout } from './components/layout/AppLayout'
 import { RequirePermission } from './components/RequirePermission'
 import { AccessProvider, useAccess } from './context/AccessContext'
 import { NavPrefsProvider } from './context/NavPrefsContext'
+import { PcsDayProvider } from './context/PcsDayContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { ensureSeeded } from './data/credentials'
 import { Accounts } from './pages/Accounts'
@@ -13,6 +14,7 @@ import { Config } from './pages/Config'
 import { Dashboard } from './pages/Dashboard'
 import { DayCheckSheet } from './pages/DayCheckSheet'
 import { Documents } from './pages/Documents'
+import { HourlyReadingForm } from './pages/HourlyReadingForm'
 import { KnowledgeBase } from './pages/KnowledgeBase'
 import { Ledgers } from './pages/Ledgers'
 import { Login } from './pages/Login'
@@ -49,6 +51,14 @@ function AuthGate() {
             element={
               <RequirePermission permission="checksheets:view">
                 <DayCheckSheet />
+              </RequirePermission>
+            }
+          />
+          <Route
+            path="hourly-reading"
+            element={
+              <RequirePermission permission="checksheets:create">
+                <HourlyReadingForm />
               </RequirePermission>
             }
           />
@@ -129,7 +139,9 @@ function App() {
     <AccessProvider>
       <ThemeProvider>
         <NavPrefsProvider>
-          <AuthGate />
+          <PcsDayProvider>
+            <AuthGate />
+          </PcsDayProvider>
         </NavPrefsProvider>
       </ThemeProvider>
     </AccessProvider>

@@ -238,6 +238,39 @@ export const REQUIREMENTS: RequirementFeature[] = [
           'Every tab has an id column and documented headers.',
         ],
       },
+      {
+        id: 'REQ-PCS-08',
+        title: 'Hourly readings as child records via a separate form',
+        priority: 'Must',
+        description: 'Hourly readings are captured one time slot at a time as standalone child records, not embedded in the day sheet, and are assembled into the print aligned by slot.',
+        acceptanceCriteria: [
+          'A dedicated Hourly Readings form captures a single shift + time slot per submission.',
+          'Each submission is stored as its own child record (slot entry).',
+          'Re-submitting the same shift+slot updates that slot rather than duplicating it.',
+          'The day print assembles all captured child records into the grid, each aligned to its time-slot column.',
+        ],
+      },
+      {
+        id: 'REQ-PCS-09',
+        title: 'Machine hourly readings',
+        priority: 'Must',
+        description: 'Each machine has its own hourly readings (e.g. Die Temp) captured per time slot.',
+        acceptanceCriteria: [
+          'The hourly form captures a per-machine value for each machine on the day.',
+          'Machine hourly readings appear on the print in the machine row under the correct slot.',
+        ],
+      },
+      {
+        id: 'REQ-PCS-10',
+        title: 'Theme-aware out-of-spec highlight',
+        priority: 'Should',
+        description: 'Out-of-spec values are highlighted with a red background and white text on light themes, and the contrary on dark themes; printing always uses the red-fill form.',
+        acceptanceCriteria: [
+          'On light themes an out-of-spec cell has a red background with white text.',
+          'On dark themes the highlight inverts (light cell, red text).',
+          'Printing forces the red background with white text regardless of theme.',
+        ],
+      },
     ],
   },
   {

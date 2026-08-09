@@ -53,6 +53,22 @@ export interface PcsReading {
   value: string | number
 }
 
+/**
+ * Hourly reading child record — the unit captured by the standalone Hourly
+ * Reading form: one time slot's readings, both line-level and per-machine.
+ * The day print assembles these child records into the grid, aligned by slot.
+ */
+export interface PcsSlotEntry {
+  id: string
+  shiftCode: string
+  /** HH:MM column this entry aligns to on the print. */
+  slot: string
+  /** Line-level readings: parameterCode -> value. */
+  line: Record<string, string | number>
+  /** Per-machine readings: machineCode -> (parameterCode -> value). */
+  machines: Record<string, Record<string, string | number>>
+}
+
 export interface PcsCorePin {
   shiftCode: string
   /** cavity 1..10 pass/fail. */
@@ -87,7 +103,8 @@ export interface DaySheet {
   otherAlloy: boolean
   inChargeSign: string
   machines: PcsMachineSetup[]
-  readings: PcsReading[]
+  /** Hourly reading child records, assembled into the print grid by slot. */
+  slotEntries: PcsSlotEntry[]
   corePins: PcsCorePin[]
   signoffs: PcsShiftSignoff[]
   startup: PcsStartup

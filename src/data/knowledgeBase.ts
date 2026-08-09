@@ -264,9 +264,15 @@ export const KB_ARTICLES: KbArticle[] = [
         ],
       },
       {
+        heading: 'Capturing hourly readings',
+        body: [
+          'Hourly readings are entered on their own form (Production → Hourly Readings), one time slot at a time. Pick the shift and time slot, enter the line readings and each machine’s reading, and save. Each save is a separate record that is appended to the day and slotted into the correct column on the print — so several people can record different slots and the day sheet assembles them at print time.',
+        ],
+      },
+      {
         heading: 'Out-of-spec highlighting',
         body: [
-          'Every measured parameter has a spec range. Any reading outside its range is shown in red on screen and on the printout, and (with the backend connected) an email alert is sent to the configured recipients.',
+          'Every measured parameter has a spec range. Any reading outside its range is highlighted: a red background with white text on light themes (and the inverse on dark themes), on screen and on the printout. With the backend connected an email alert is also sent to the configured recipients.',
         ],
       },
       {

@@ -7,6 +7,7 @@ import {
   FileText,
   LayoutDashboard,
   Package,
+  PencilLine,
   Printer,
   Receipt,
   Ruler,
@@ -46,6 +47,7 @@ export const NAV: NavGroup[] = [
     label: 'Production',
     items: [
       { to: '/check-sheets', label: 'Process Check Sheets', icon: ClipboardList, permission: 'checksheets:view' },
+      { to: '/hourly-reading', label: 'Hourly Readings', icon: PencilLine, permission: 'checksheets:create' },
       { to: '/day-check-sheet', label: 'Day Check Sheet (Print)', icon: Printer, permission: 'checksheets:view' },
     ],
   },

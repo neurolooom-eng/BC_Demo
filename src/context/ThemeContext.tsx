@@ -40,6 +40,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
+    // Expose light/dark so theme-agnostic styling (e.g. the .oos highlight) can
+    // branch without knowing each theme id.
+    const mode = THEMES.find((t) => t.id === theme)?.mode ?? 'light'
+    document.documentElement.setAttribute('data-mode', mode)
   }, [theme])
 
   const setTheme = (next: ThemeId) => {
