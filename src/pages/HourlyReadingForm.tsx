@@ -1,4 +1,4 @@
-import { Check, PencilLine, Plus, Printer, Trash2 } from 'lucide-react'
+import { Check, PencilLine, Plus, Power, Printer, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { ProcessCheckSheetPrint } from '../components/pcs/ProcessCheckSheetPrint'
 import { Button } from '../components/ui/Button'
@@ -18,7 +18,7 @@ type Vals = Record<string, string>
  * N/A for a later-added machine. Includes an in-place print of the day sheet.
  */
 export function HourlyReadingForm() {
-  const { sheet, addSlotEntry, removeSlotEntry, addMachine } = usePcsDay()
+  const { sheet, addSlotEntry, removeSlotEntry, addMachine, stopMachine, reactivateMachine } = usePcsDay()
 
   const [shiftCode, setShiftCode] = useState(PCS_SHIFTS[0].code)
   const [slot, setSlot] = useState(PCS_SHIFTS[0].slots[0])
@@ -211,6 +211,41 @@ export function HourlyReadingForm() {
             </span>
           </div>
         </fieldset>
+      </Card>
+
+      <Card className="p-4">
+        <h2 className="mb-2 text-sm font-semibold text-text">Machines</h2>
+        <div className="flex flex-col gap-2">
+          {sheet.machines.map((m) => {
+            const stopped = Boolean(m.stoppedFromSlot)
+            return (
+              <div key={m.machineCode} className="flex flex-wrap items-center gap-2 rounded-md border border-border px-3 py-2 text-sm">
+                <span className="font-semibold text-text">M/C {m.machineCode}</span>
+                <span className="text-muted">from {m.activeFromSlot}</span>
+                {stopped ? (
+                  <span className="chip bg-danger/15 text-danger">stopped from {m.stoppedFromSlot}</span>
+                ) : (
+                  <span className="chip bg-success/15 text-success">running</span>
+                )}
+                <div className="ml-auto">
+                  {stopped ? (
+                    <Button variant="outline" onClick={() => reactivateMachine(m.machineCode)}>
+                      Reactivate
+                    </Button>
+                  ) : (
+                    <Button variant="outline" icon={<Power className="h-4 w-4" />} onClick={() => stopMachine(m.machineCode, shiftCode, slot)}>
+                      Stop from {slot}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        <p className="mt-2 text-[11px] text-muted">
+          Stopping a machine marks every slot from the selected time ({slot}) onward as N/A, and it is no longer asked
+          for on the hourly form.
+        </p>
       </Card>
 
       <Card className="p-4">

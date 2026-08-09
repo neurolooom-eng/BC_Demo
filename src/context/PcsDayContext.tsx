@@ -17,6 +17,10 @@ interface PcsDayValue {
   addSlotEntry: (entry: PcsSlotEntry) => void
   removeSlotEntry: (id: string) => void
   addMachine: (machine: PcsMachineSetup) => void
+  /** Stop a machine from the given slot (fault/shutdown) — that slot onward is N/A. */
+  stopMachine: (machineCode: string, shift: string, slot: string) => void
+  /** Clear a machine's stop, so it is active again through the rest of the day. */
+  reactivateMachine: (machineCode: string) => void
   resetToDemo: () => void
 }
 
@@ -64,6 +68,26 @@ export function PcsDayProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
+  const stopMachine = useCallback((machineCode: string, shift: string, slot: string) => {
+    setMachines((prev) => {
+      const next = prev.map((m) =>
+        m.machineCode === machineCode ? { ...m, stoppedFromShift: shift, stoppedFromSlot: slot } : m,
+      )
+      window.localStorage.setItem(MC_KEY, JSON.stringify(next))
+      return next
+    })
+  }, [])
+
+  const reactivateMachine = useCallback((machineCode: string) => {
+    setMachines((prev) => {
+      const next = prev.map((m) =>
+        m.machineCode === machineCode ? { ...m, stoppedFromShift: undefined, stoppedFromSlot: undefined } : m,
+      )
+      window.localStorage.setItem(MC_KEY, JSON.stringify(next))
+      return next
+    })
+  }, [])
+
   const resetToDemo = useCallback(() => {
     setEntries(DEMO_DAY_SHEET.slotEntries)
     setMachines(DEMO_DAY_SHEET.machines)
@@ -77,9 +101,11 @@ export function PcsDayProvider({ children }: { children: ReactNode }) {
       addSlotEntry,
       removeSlotEntry,
       addMachine,
+      stopMachine,
+      reactivateMachine,
       resetToDemo,
     }),
-    [entries, machines, addSlotEntry, removeSlotEntry, addMachine, resetToDemo],
+    [entries, machines, addSlotEntry, removeSlotEntry, addMachine, stopMachine, reactivateMachine, resetToDemo],
   )
 
   return <PcsDayContext.Provider value={value}>{children}</PcsDayContext.Provider>

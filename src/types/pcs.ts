@@ -46,6 +46,10 @@ export interface PcsMachineSetup {
   activeFromShift: string
   /** Time slot the machine started; earlier slots print N/A for this machine. */
   activeFromSlot: string
+  /** Shift the machine was stopped on (fault/shutdown), if any. */
+  stoppedFromShift?: string
+  /** First slot the machine is no longer active; this slot onward prints N/A. */
+  stoppedFromSlot?: string
 }
 
 /** One captured value: parameter × slot (× machine for machine-level rows). */

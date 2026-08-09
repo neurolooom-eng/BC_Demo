@@ -292,6 +292,18 @@ export const REQUIREMENTS: RequirementFeature[] = [
           'Printing yields the same QC FMT 038 landscape sheet.',
         ],
       },
+      {
+        id: 'REQ-PCS-13',
+        title: 'Stop a machine mid-day (fault) with N/A for remaining slots',
+        priority: 'Must',
+        description: 'A running machine can be stopped from a given time slot; from that slot onward it is not asked for on the hourly form and prints N/A for the rest of the day. A stopped machine can be reactivated.',
+        acceptanceCriteria: [
+          'Stopping a machine from a slot excludes it from the hourly form for that slot and all later slots.',
+          'The day print shows N/A for the machine from its stop slot to the end of the day.',
+          'Slots before the stop still show the readings that were captured.',
+          'Reactivating a stopped machine makes it active again for subsequent slots.',
+        ],
+      },
     ],
   },
   {
