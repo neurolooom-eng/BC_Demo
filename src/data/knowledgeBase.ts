@@ -266,7 +266,8 @@ export const KB_ARTICLES: KbArticle[] = [
       {
         heading: 'Capturing hourly readings',
         body: [
-          'Hourly readings are entered on their own form (Production → Hourly Readings), one time slot at a time. Pick the shift and time slot, enter the line readings and each machine’s reading, and save. Each save is a separate record that is appended to the day and slotted into the correct column on the print — so several people can record different slots and the day sheet assembles them at print time.',
+          'Hourly readings are entered on their own form (Production → Hourly Readings), one time slot at a time. Pick the shift and time slot, enter the line readings and each active machine’s reading, and save. Each save is a separate record that is appended to the day and slotted into the correct column on the print — so several people can record different slots and the day sheet assembles them at print time.',
+          'Machines can be added as they start during the day. When you add a machine at, say, 10:00, it takes readings from 10:00 onward and every earlier slot shows N/A for it. You can preview and print the day sheet right from this page (“Day sheet & print”).',
         ],
       },
       {

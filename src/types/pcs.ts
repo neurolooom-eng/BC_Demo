@@ -42,6 +42,10 @@ export interface PcsMachineSetup {
   pouringTime?: number
   tiltingTime?: number
   degasKillingTime?: number
+  /** Shift the machine was added/started on. */
+  activeFromShift: string
+  /** Time slot the machine started; earlier slots print N/A for this machine. */
+  activeFromSlot: string
 }
 
 /** One captured value: parameter × slot (× machine for machine-level rows). */
