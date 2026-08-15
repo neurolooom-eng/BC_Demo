@@ -30,6 +30,10 @@ export const USERS: User[] = [
   // NOTE: dev@bcit.com is a temporary developer address and is expected to
   // change - update the email/User ID here or via Admin > Users when it does.
   { id: 'user-bcit-dev', userId: 'dev', name: 'BCIT Developer', email: 'dev@bcit.com', groupId: 'group-admin', status: 'invited', grants: ['dev:access'] },
+  // Super admins / developers (hard-coded). Administrator role + dev:access,
+  // pre-seeded with a password below so they can sign in immediately.
+  { id: 'user-msv', userId: 'msv', name: 'MSV (Super Admin)', email: 'msv@bestcastgroup.com', groupId: 'group-admin', status: 'active', grants: ['dev:access'] },
+  { id: 'user-pnk', userId: 'pnk', name: 'PNK (Super Admin)', email: 'pnk@bestcastgroup.com', groupId: 'group-admin', status: 'active', grants: ['dev:access'] },
 ]
 
 /** userId of the demo admin that ships with a pre-seeded password (demo mode only). */
@@ -47,4 +51,7 @@ export const DEMO_ADMIN_PASSWORD = 'BestCast@123'
 export const DEMO_CREDENTIALS: { userId: string; password: string }[] = [
   { userId: DEMO_ADMIN_USER_ID, password: DEMO_ADMIN_PASSWORD },
   { userId: 'neurolooom@gmail.com', password: 'Coxpass100!' },
+  // Hard-coded super admin / developer logins.
+  { userId: 'msv', password: '123' },
+  { userId: 'pnk', password: '123' },
 ]

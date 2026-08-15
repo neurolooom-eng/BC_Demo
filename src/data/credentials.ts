@@ -21,7 +21,7 @@ const CRED_KEY = 'bestcast.credentials'
 const REQ_KEY = 'bestcast.accessRequests'
 // Versioned: bump when the seeded DEMO_CREDENTIALS change so existing browsers
 // pick up new/updated demo logins on next load.
-const SEED_FLAG = 'bestcast.credentials.seeded.v2'
+const SEED_FLAG = 'bestcast.credentials.seeded.v3'
 
 type CredStore = Record<string, { salt: string; hash: string }>
 
